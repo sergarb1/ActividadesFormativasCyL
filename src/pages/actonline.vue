@@ -1,26 +1,29 @@
 <template>
-  <q-page class="flex flex-center">
-    <!-- Elemento colapsable https://quasar-framework.org/components/collapsible.html -->
-    <q-collapsible icon="account_balance" label="Actividades CyL" opened class="col-lg">
-      <q-list highlight separator>
-        <q-list-header>
-          Datos actualizados {{ ultimaActualizacion }}
-          <!-- Boton que actualiza los datos de ValenBisi, que se ve como un iconito
-              https://quasar-framework.org/components/button.html
-          -->
-          <q-btn @click="getEstadoActividades" icon="update"/>
-        </q-list-header>
-      </q-list>
+  <q-page class="flex-top q-ma-lg">
+    <q-item-tile label class="q-mb-md">
+      <strong>Actividades Online</strong>
+    </q-item-tile>
+    <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
+      <q-card-title>
+        {{ act.nombre }}
+        <div slot="right" class="row items-center">
+          <q-icon size="16px"/>&nbsp;
+          <small>{{act.tematica}}</small>
+        </div>
+      </q-card-title>
+      <q-card-main>
+        <pre class="text-faded">Fecha inicio matriculación {{ act.fechaInicioMatriculacion }}</pre>
+        <pre class="text-faded">Fecha fin matriculación {{ act.fechaFinMatriculacion }}</pre>
+        <pre class="text-faded">Fecha inicio actividad{{ act.fechaInicio }}</pre>
+        <pre class="text-faded">Fecha fin actividad {{ act.fechaFin }}</pre>
+        <q-item-main/>
+      </q-card-main>
+      <q-card-separator/>
+      <q-card-actions>
+        <q-icon name="event"/>&nbsp;&nbsp;
+      </q-card-actions>
+    </q-card>
 
-      <!-- Usamos el componente q-table
-              En el definimos:
-                - Fuente de datos
-                - Como organizamos las columnas
-                - Key (campo con valor unico)
-                https://quasar-framework.org/components/datatable.html
-      -->
-      <q-table :data="actividades" :columns="columns" class="col-lg"></q-table>
-    </q-collapsible>
   </q-page>
 </template>
 
@@ -40,25 +43,10 @@ export default {
     return {
       // URL para obtener datos JSON de ValenBisi
       endpoint:
-        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=charla&tipoActividad=curso&tipoActividad=taller&centro=leon",
+        "https://admin.sigecyl.es/servicios/actividades/actividadesOnline",
       // Array con información de cada uno de las estacione
       actividades: [],
-      // Fecha de ultima actualizacion en formato Cadena
-      ultimaActualizacion: "",
-
-      // Array que define las columnas de la tabla
-      columns: [
-        {
-          name: "Nombre",
-          required: true,
-          label: "Nombre actividad",
-          align: "left",
-          field: "nombre",
-          sortable: true
-          //classes: '',
-          //style: 'width: 500px'
-        }
-      ]
+   
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
@@ -78,6 +66,7 @@ export default {
         .get(this.endpoint)
         .then(response => {
           // Si, para coger este JSON debo hacer esta pirula
+          console.log(response.data);
           var miJson = JSON.parse(JSON.stringify(response.data));
 
           var x;
@@ -88,7 +77,15 @@ export default {
             //Formamos el dato
             var dato;
             dato = {
-              nombre: miJson.actividades[x].nombre
+              nombre: miJson.actividades[x].nombre,
+              descripcion: miJson.actividades[x].descripcion.replace(/<[^>]+>/g, ''),
+              tematica: miJson.actividades[x].tematica,
+              fechaInicio: miJson.actividades[x].fechaInicio,
+              fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
+              fechaFin: miJson.actividades[x].temafechaFin,
+              fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
+              
+              
             };
             // Lo metemos en un array
             this.actividades.push(dato);

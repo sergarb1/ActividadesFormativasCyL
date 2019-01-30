@@ -1,81 +1,81 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar
-        color="primary"
-        :glossy="$q.theme === 'mat'"
-        :inverted="$q.theme === 'ios'"
-      >
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-        >
-          <q-icon name="menu" />
+      <q-toolbar color="primary" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
+        <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
+          <q-icon name="menu"/>
         </q-btn>
 
-        <q-toolbar-title>
-          Quasar App
-          <div slot="subtitle">Running on Quasar v{{ $q.version }}</div>
+        <q-toolbar-title>Actividades Castilla y León
+          <div slot="subtitle">Para todos los públicos</div>
         </q-toolbar-title>
       </q-toolbar>
+      <q-tabs color="primary">
+        <q-route-tab
+          icon="event"
+          to="/actonline"
+          exact
+          slot="title"
+          name="actonline"
+          label="Actividades Online"
+        />
+        <q-route-tab
+          icon="pages"
+          to="/actpresencial"
+          exact
+          slot="title"
+          name="actpresencial"
+          label="Actividades Presenciales"
+        />
+        <q-route-tab
+          icon="face"
+          to="/suscripcion"
+          exact
+          slot="title"
+          name="suscripcion"
+          label="Mis suscripciones"
+        />
+      </q-tabs>
     </q-layout-header>
 
     <q-layout-drawer
       v-model="leftDrawerOpen"
       :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
-      <q-list
-        no-border
-        link
-        inset-delimiter
-      >
-        <q-list-header>Essential Links</q-list-header>
-        <q-item @click.native="openURL('http://quasar-framework.org')">
-          <q-item-side icon="school" />
-          <q-item-main label="Docs" sublabel="quasar-framework.org" />
+      <q-list no-border link inset-delimiter>
+        <q-list-header>Enlaces</q-list-header>
+
+        <q-item to="/actonline">
+          <q-item-side icon="help_outline"/>
+          <q-item-main label="Inicio" sublabel="De nuestra aplicacion"/>
         </q-item>
-        <q-item @click.native="openURL('https://github.com/quasarframework/')">
-          <q-item-side icon="code" />
-          <q-item-main label="GitHub" sublabel="github.com/quasarframework" />
-        </q-item>
-        <q-item @click.native="openURL('https://discord.gg/5TDhbDg')">
-          <q-item-side icon="chat" />
-          <q-item-main label="Discord Chat Channel" sublabel="https://discord.gg/5TDhbDg" />
-        </q-item>
-        <q-item @click.native="openURL('http://forum.quasar-framework.org')">
-          <q-item-side icon="record_voice_over" />
-          <q-item-main label="Forum" sublabel="forum.quasar-framework.org" />
-        </q-item>
-        <q-item @click.native="openURL('https://twitter.com/quasarframework')">
-          <q-item-side icon="rss feed" />
-          <q-item-main label="Twitter" sublabel="@quasarframework" />
+        <q-item to="/acercade">
+          <q-item-side icon="help_outline"/>
+          <q-item-main label="Acerca de" sublabel="Profes redondos"/>
         </q-item>
       </q-list>
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openURL } from "quasar";
 
 export default {
-  name: 'MyLayout',
-  data () {
+  name: "MyLayout",
+  data() {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop
-    }
+    };
   },
   methods: {
     openURL
   }
-}
+};
 </script>
 
 <style>

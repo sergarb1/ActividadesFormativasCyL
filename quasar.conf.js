@@ -51,7 +51,17 @@ module.exports = function (ctx) {
         'QItemSide',
           /// Incluido por mi
         'QCollapsible',
-        'QTable'
+        'QTable',
+        'QTabs',
+        'QRouteTab',
+        'QCard',
+        'QCardActions',
+        'QCardSeparator',
+        'QCardTitle',
+        'QCardMain',
+        'QItemTile',
+        'QCheckbox',
+        'QToggle'
 
       ],
       directives: [
