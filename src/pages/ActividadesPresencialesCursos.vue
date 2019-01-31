@@ -143,7 +143,8 @@ export default {
 
 
             // Eliminamos duplicados
-            arrayTags=this.eliminarDuplicados(arrayTags);
+            arrayTags=this.eliminarDuplicados(arrayTags);            
+            arrayTags.sort()
             // Aplicamos Stemming a cada palabra
             for(var i in arrayTags){
               arrayMineria[i]=natural.PorterStemmerEs.stem(arrayTags[i]);
