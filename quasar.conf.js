@@ -62,7 +62,8 @@ module.exports = function (ctx) {
         'QCardMain',
         'QItemTile',
         'QCheckbox',
-        'QToggle'
+        'QToggle',
+        'QAlert'
 
       ],
       directives: [

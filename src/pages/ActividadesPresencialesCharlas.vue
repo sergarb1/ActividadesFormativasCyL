@@ -3,6 +3,8 @@
     <q-item-tile label class="q-mb-md">
       <strong>Charlas</strong>
     </q-item-tile>
+    <q-alert v-if="this.actividades.length==0" type="info">No hay actividades disponibles.</q-alert>
+
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
       <q-card-title>
         {{ act.nombre }}
