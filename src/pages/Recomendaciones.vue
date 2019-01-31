@@ -1,25 +1,19 @@
 <template>
   <q-page class="flex-top q-ma-lg">
-
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Cursos">
       <q-item-tile label class="q-mb-md">
-        <strong>Favoritos</strong>
+        <strong>Recomendaciones</strong>
       </q-item-tile>
-      <q-alert v-if="this.actividadesCursos.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.recomCursos.length==0" type="info">No hay actividades disponibles.</q-alert>
 
       <q-card
         class="q-mb-md"
-        v-for="act in actividadesCursos"
+        v-for="act in recomCursos"
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="guardarFavoritosCursos();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-          />
+        
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -70,22 +64,17 @@
     <!-- Collapsible charlas -->
     <q-collapsible icon="mode_comment" label="Charlas">
       <q-item-tile label class="q-mb-md">
-        <strong>Favoritos</strong>
+        <strong>Recomendaciones</strong>
       </q-item-tile>
-      <q-alert v-if="this.actividadesCharlas.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.recomCharlas.length==0" type="info">No hay actividades disponibles.</q-alert>
 
       <q-card
         class="q-mb-md"
-        v-for="act in actividadesCharlas"
+        v-for="act in recomCharlas"
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="guardarFavoritosCharlas();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-          />
+    
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -136,22 +125,17 @@
     <!-- Collapsible talleres -->
     <q-collapsible icon="extension" label="Talleres">
       <q-item-tile label class="q-mb-md">
-        <strong>Favoritos</strong>
+        <strong>Recomendaciones</strong>
       </q-item-tile>
-      <q-alert v-if="this.actividadesTalleres.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.recomTalleres.length==0" type="info">No hay actividades disponibles.</q-alert>
 
       <q-card
         class="q-mb-md"
-        v-for="act in actividadesTalleres"
+        v-for="act in recomTalleres"
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="guardarFavoritosTalleres();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-          />
+
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -199,26 +183,20 @@
       </q-card>
     </q-collapsible>
     <!-- fin collapsible talleres -->
-
-        <!-- Collapsible online -->
-    <q-collapsible  icon="cloud" label="Online">
+    <!-- Collapsible online -->
+    <q-collapsible icon="cloud" label="Online">
       <q-item-tile label class="q-mb-md">
-        <strong>Favoritos</strong>
+        <strong>Recomendaciones</strong>
       </q-item-tile>
-      <q-alert v-if="this.actividadesOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.recomOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
 
       <q-card
         class="q-mb-md"
-        v-for="act in actividadesOnline"
+        v-for="act in recomOnline"
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="guardarFavoritosOnline();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-          />
+ 
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -292,9 +270,23 @@ export default {
         "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso",
       // Array con información de cada uno de las estacione
       actividadesCursos: [],
+      actividadesCursosPalabras: [],
+      
       actividadesCharlas: [],
+      actividadesCharlasPalabras: [],
       actividadesTalleres: [],
-      actividadesOnline: []
+      actividadesTalleresPalabras: [],
+      actividadesOnline: [],
+      actividadesOnlinePalabras: [],
+      datosCursos : [],
+      datosCharlas : [],
+      datosTalleres : [],
+      datosOnline : [],
+
+      recomCursos: [],
+      recomCharlas: [],
+      recomTalleres: [],
+      recomOnline: [],
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
@@ -306,7 +298,41 @@ export default {
   methods: {
     // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
     getEstadoActividades() {
+      this.datosCursos = [];
+      this.datosCharlas = [];
+      this.datosTalleres = [];
+      this.datosOnline = [];
+
+      if (localStorage.getItem("datos-cursos")) {
+        var tmp = JSON.parse(localStorage.getItem("datos-cursos"));
+        for (var x in tmp) {
+          this.datosCursos.push(tmp[x]);
+        }
+      }
+
+
+      if (localStorage.getItem("datos-charlas")) {
+        var tmp = JSON.parse(localStorage.getItem("datos-charlas"));
+        for (var x in tmp) {
+          this.datosCharlas.push(tmp[x]);
+        }
+      }
+      if (localStorage.getItem("datos-talleres")) {
+        var tmp = JSON.parse(localStorage.getItem("datos-talleres"));
+        for (var x in tmp) {
+          this.datosTalleres.push(tmp[x]);
+        }
+      }
+      if (localStorage.getItem("datos-online")) {
+        var tmp = JSON.parse(localStorage.getItem("datos-online"));
+        for (var x in tmp) {
+          this.datosOnline.push(tmp[x]);
+        }
+      }
+
+
       this.actividadesCursos = [];
+      this.actividadesCursosPalabras = [];
       this.actividadesCharlas = [];
       this.actividadesTalleres = [];
       this.actividadesOnline = [];
@@ -315,28 +341,207 @@ export default {
         var tmp = JSON.parse(localStorage.getItem("favoritos-cursos"));
         for (var x in tmp) {
           this.actividadesCursos.push(tmp[x]);
+          for(var y in tmp[x].bolsaDePalabras)
+            this.actividadesCursosPalabras.push(tmp[x].bolsaDePalabras[y]);
         }
       }
+
+      
+      //this.actividadesCursosPalabras=this.eliminarDuplicados(this.actividadesCursosPalabras);
+
       if (localStorage.getItem("favoritos-charlas")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-charlas"));
         for (var x in tmp) {
           this.actividadesCharlas.push(tmp[x]);
+
+          for(var y in tmp[x].bolsaDePalabras)
+            this.actividadesCharlasPalabras.push(tmp[x].bolsaDePalabras[y]);
+
+
+          
         }
       }
       if (localStorage.getItem("favoritos-talleres")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-talleres"));
         for (var x in tmp) {
           this.actividadesTalleres.push(tmp[x]);
+          for(var y in tmp[x].bolsaDePalabras)
+            this.actividadesTalleresPalabras.push(tmp[x].bolsaDePalabras[y]);
+
         }
       }
       if (localStorage.getItem("favoritos-online")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-online"));
         for (var x in tmp) {
           this.actividadesOnline.push(tmp[x]);
+          for(var y in tmp[x].bolsaDePalabras)
+            this.actividadesOnlinePalabras.push(tmp[x].bolsaDePalabras[y]);
+
         }
       }
+
+      // Generamos recomendaciones cursos
+      this.recomendacionesCursos();
+      this.recomendacionesCharlas();
+      this.recomendacionesTalleres();
+      this.recomendacionesOnline();
     },
-    // Funcion que recibe un array y elimina duplicados
+    //Genera recomendaciones de cursos
+    recomendacionesCursos(){
+      this.recomCursos=[];
+
+      for(var i in this.datosCursos){
+        this.datosCursos[i].puntosRecomendacion=0;
+        for(var j in this.actividadesCursos){
+          if(this.datosCursos[i].nombre==this.actividadesCursos[j].nombre){
+            
+            this.datosCursos[i].puntosRecomendacion=-1;
+            break;
+          }
+        }
+        if(this.datosCursos[i].puntosRecomendacion==0){
+          
+          for(var k in this.datosCursos[i].bolsaDePalabras){
+            for(var j in this.actividadesCursosPalabras){
+              console.log("Comparo "+this.actividadesCursosPalabras[j]+" con "+this.datosCursos[i].bolsaDePalabras[k]);
+              if(this.actividadesCursosPalabras[j]==this.datosCursos[i].bolsaDePalabras[k]){
+                console.log("Entra");
+                this.datosCursos[i].puntosRecomendacion++;
+                break;
+              } 
+            }
+          }
+        }
+      }
+
+      this.datosCursos.sort( function(a,b){
+          if (a.puntosRecomendacion > b.puntosRecomendacion)
+            return -1;
+          if (a.puntosRecomendacion < b.puntosRecomendacion)
+            return 1;
+          return 0;
+      });
+
+      for (var i=0;i<5 && i<this.datosCursos.length;i++){
+        this.recomCursos.push(this.datosCursos[i]);
+      }
+    },
+    //Genera recomendaciones de charlas
+    recomendacionesCharlas(){
+      this.recomCharlas=[];
+
+      for(var i in this.datosCharlas){
+        this.datosCharlas[i].puntosRecomendacion=0;
+        for(var j in this.actividadesCharlas){
+          if(this.datosCharlas[i].nombre==this.actividadesCharlas[j].nombre){
+            
+            this.datosCharlas[i].puntosRecomendacion=-1;
+            break;
+          }
+        }
+        if(this.datosCharlas[i].puntosRecomendacion==0){
+          
+          for(var k in this.datosCharlas[i].bolsaDePalabras){
+            for(var j in this.actividadesCharlasPalabras){
+              console.log("Comparo "+this.actividadesCharlasPalabras[j]+" con "+this.datosCharlas[i].bolsaDePalabras[k]);
+              if(this.actividadesCharlasPalabras[j]==this.datosCharlas[i].bolsaDePalabras[k]){
+                this.datosCharlas[i].puntosRecomendacion++;
+                break;
+              } 
+            }
+          }
+        }
+      }
+
+      this.datosCharlas.sort( function(a,b){
+          if (a.puntosRecomendacion > b.puntosRecomendacion)
+            return -1;
+          if (a.puntosRecomendacion < b.puntosRecomendacion)
+            return 1;
+          return 0;
+      });
+
+      for (var i=0;i<5 && i<this.datosCharlas.length;i++){
+        this.recomCharlas.push(this.datosCharlas[i]);
+      }
+    },    
+    //Genera recomendaciones de talleres
+    recomendacionesTalleres(){
+      this.recomTalleres=[];
+
+      for(var i in this.datosTalleres){
+        this.datosTalleres[i].puntosRecomendacion=0;
+        for(var j in this.actividadesTalleres){
+          if(this.datosTalleres[i].nombre==this.actividadesTalleres[j].nombre){
+            
+            this.datosTalleres[i].puntosRecomendacion=-1;
+            break;
+          }
+        }
+        if(this.datosTalleres[i].puntosRecomendacion==0){
+          
+          for(var k in this.datosTalleres[i].bolsaDePalabras){
+            for(var j in this.actividadesTalleresPalabras){
+             if(this.actividadesTalleresPalabras[j]==this.datosTalleres[i].bolsaDePalabras[k]){
+                this.datosTalleres[i].puntosRecomendacion++;
+                break;
+              } 
+            }
+          }
+        }
+      }
+
+      this.datosTalleres.sort( function(a,b){
+          if (a.puntosRecomendacion > b.puntosRecomendacion)
+            return -1;
+          if (a.puntosRecomendacion < b.puntosRecomendacion)
+            return 1;
+          return 0;
+      });
+
+      for (var i=0;i<5 && i<this.datosTalleres.length;i++){
+        this.recomTalleres.push(this.datosTalleres[i]);
+      }
+    },
+    //Genera recomendaciones de talleres
+    recomendacionesOnline(){
+      this.recomOnline=[];
+
+      for(var i in this.datosOnline){
+        this.datosOnline[i].puntosRecomendacion=0;
+        for(var j in this.actividadesOnline){
+          if(this.datosOnline[i].nombre==this.actividadesOnline[j].nombre){
+            
+            this.datosOnline[i].puntosRecomendacion=-1;
+            break;
+          }
+        }
+        if(this.datosOnline[i].puntosRecomendacion==0){
+          
+          for(var k in this.datosOnline[i].bolsaDePalabras){
+            for(var j in this.actividadesOnlinePalabras){
+             if(this.actividadesOnlinePalabras[j]==this.datosOnline[i].bolsaDePalabras[k]){
+                this.datosOnline[i].puntosRecomendacion++;
+                break;
+              } 
+            }
+          }
+        }
+      }
+
+      this.datosOnline.sort( function(a,b){
+          if (a.puntosRecomendacion > b.puntosRecomendacion)
+            return -1;
+          if (a.puntosRecomendacion < b.puntosRecomendacion)
+            return 1;
+          return 0;
+      });
+
+      for (var i=0;i<5 && i<this.datosOnline.length;i++){
+        this.recomOnline.push(this.datosOnline[i]);
+      }
+    },
+        // Funcion que recibe un array y elimina duplicados
     eliminarDuplicados(names) {
       return names
         .slice()
@@ -348,70 +553,6 @@ export default {
           return a;
         }, []);
     },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosCursos() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesCursos) {
-        if (this.actividadesCursos[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesCursos[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-cursos",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosCharlas() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesCharlas) {
-        if (this.actividadesCharlas[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesCharlas[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-charlas",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosTalleres() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesTalleres) {
-        if (this.actividadesTalleres[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesTalleres[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-talleres",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosOnline() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesOnline) {
-        if (this.actividadesOnline[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesOnline[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-online",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    }
   }
 };
 </script>

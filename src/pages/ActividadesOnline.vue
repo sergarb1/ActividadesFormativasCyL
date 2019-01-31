@@ -141,6 +141,11 @@ export default {
             // Lo metemos en un array
             this.actividades.push(dato);
           }
+          //Actualizamos favoritos
+          this.cargarFavoritos();
+          
+          // Salvo en localstorage
+          localStorage.setItem("datos-online",JSON.stringify(this.actividades));
         })
         // En caso de error, mostramos el error para facilitar depuración
         .catch(error => {
