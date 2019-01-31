@@ -14,10 +14,10 @@
         </span>
       </q-card-title>
       <q-card-main>
-        <pre class="text-faded">Fecha inicio matriculación {{ $parsearFecha(act.fechaInicioMatriculacion) }}</pre>
-        <pre class="text-faded">Fecha fin matriculación {{ $parsearFecha(act.fechaFinMatriculacion) }}</pre>
-        <pre class="text-faded">Fecha inicio actividad{{ $parsearFecha(act.fechaInicio) }}</pre>
-        <pre class="text-faded">Fecha fin actividad {{ $parsearFecha(act.fechaFin) }}</pre>
+        <pre class="text-faded">Fecha inicio matriculación: {{ $parsearFecha(act.fechaInicioMatriculacion) }}</pre>
+        <pre class="text-faded">Fecha fin matriculación: {{ $parsearFecha(act.fechaFinMatriculacion) }}</pre>
+        <pre class="text-faded">Fecha inicio actividad: {{ $parsearFecha(act.fechaInicio) }}</pre>
+        <pre class="text-faded">Fecha fin actividad: {{ $parsearFecha(act.fechaFin) }}</pre>
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
