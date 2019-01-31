@@ -7,36 +7,44 @@
       <q-card-title>
         {{ act.nombre }}
         <span slot="subtitle">
-          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/> &nbsp;
+          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
           <small>{{act.tematica}}</small>
         </span>
       </q-card-title>
       <q-card-main>
-         {{ act.descripcion }}
+        {{ act.descripcion }}
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
       <q-card-actions align="between">
         <div>
-        <q-icon name="event_note"/>&nbsp;&nbsp;
-        <small><strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong></small>
+          <q-icon name="event_note"/>&nbsp;&nbsp;
+          <small>
+            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
+          </small>
         </div>
         <div>
           <q-icon name="trending_up"/>&nbsp;&nbsp;
-          <small><strong>Nivel: {{ act.nivel }}</strong></small>
+          <small>
+            <strong>Nivel: {{ act.nivel }}</strong>
+          </small>
         </div>
-      </q-card-actions> 
+      </q-card-actions>
       <q-card-actions align="between">
         <div>
           <q-icon name="event"/>&nbsp;&nbsp;
-          <small><strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong></small>
+          <small>
+            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+          </small>
         </div>
         <div>
           <q-icon name="watch_later"/>&nbsp;&nbsp;
-          <small><strong>Nº horas: {{ act.numeroHoras }}</strong></small>
+          <small>
+            <strong>Nº horas: {{ act.numeroHoras }}</strong>
+          </small>
         </div>
       </q-card-actions>
-      </q-card>
+    </q-card>
   </q-page>
 </template>
 
@@ -56,49 +64,73 @@ export default {
     return {
       // URL para obtener datos JSON de ValenBisi
       endpoint:
-        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso&centro=valladolid",
+        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso",
       // Array con información de cada uno de las estacione
       actividades: []
-    }
-      
+    };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
-    this.getEstadoActividades();
+    // Obtenemos la informacion de los centros marcados
+    this.obtieneInformacionCentrosMarcados();
   },
   // Metodos accesibles desde Vue
   methods: {
+    // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
+    obtieneInformacionCentrosMarcados() {
+      var provTmp;
+      if (localStorage.getItem("provincias")) {
+        // Vaciamos las actividades
+        this.actividades = [];
+        console.log(localStorage.getItem("provincias"));
+        provTmp = JSON.parse(localStorage.getItem("provincias"));
+        var x;
+        for (x in provTmp) {
+          if (provTmp[x].marcado) {
+            // Pasamos el centro sin acentos y en minusculas
+            var centroTMP = provTmp[x].nombre
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .toLowerCase();
+            this.getEstadoActividades(centroTMP);
+          }
+        }
+      }
+    },
     // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
-    getEstadoActividades() {
+    getEstadoActividades(centro) {
       // Para que nos devuelvan los datos en JSON
       axios.defaults.headers = {
         Accept: "application/json"
       };
       // Definimos el comportamiento de Axios
       axios
-        .get(this.endpoint)
+        .get(this.endpoint + "&centro=" + centro)
         .then(response => {
           // Si, para coger este JSON debo hacer esta pirula
           console.log(response.data);
           var miJson = JSON.parse(JSON.stringify(response.data));
 
           var x;
-          // Vaciamos el array
-          this.actividades = [];
           // Pasamos el contenido al array "actividades"
           for (x in miJson.actividades) {
             //Formamos el dato
             var dato;
             dato = {
               nombre: miJson.actividades[x].nombre,
-              descripcion: miJson.actividades[x].descripcion.replace(/<[^>]+>/g, ''),
+              descripcion: miJson.actividades[x].descripcion.replace(
+                /<[^>]+>/g,
+                ""
+              ),
               tematica: miJson.actividades[x].tematica,
               fechaInicio: miJson.actividades[x].fechaInicio,
-              fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
+              fechaInicioMatriculacion:
+                miJson.actividades[x].fechaInicioMatriculacion,
               fechaFin: miJson.actividades[x].fechaFin,
-              fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
+              fechaFinMatriculacion:
+                miJson.actividades[x].fechaFinMatriculacion,
               numeroHoras: miJson.actividades[x].numeroHoras,
-              nivel: miJson.actividades[x].nivel
+              centro: miJson.actividades[x].centro
             };
             // Lo metemos en un array
             this.actividades.push(dato);
