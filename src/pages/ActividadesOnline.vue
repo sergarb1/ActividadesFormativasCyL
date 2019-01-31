@@ -6,16 +6,16 @@
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
       <q-card-title>
         {{ act.nombre }}
-        <div slot="right" class="row items-center">
-          <q-icon size="16px"/>&nbsp;
+        <span slot="subtitle">
+          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/> &nbsp;
           <small>{{act.tematica}}</small>
-        </div>
+        </span>
       </q-card-title>
       <q-card-main>
-        <pre class="text-faded">Fecha inicio matriculación {{ act.fechaInicioMatriculacion }}</pre>
-        <pre class="text-faded">Fecha fin matriculación {{ act.fechaFinMatriculacion }}</pre>
-        <pre class="text-faded">Fecha inicio actividad{{ act.fechaInicio }}</pre>
-        <pre class="text-faded">Fecha fin actividad {{ act.fechaFin }}</pre>
+        <pre class="text-faded">Fecha inicio matriculación {{ $parsearFecha(act.fechaInicioMatriculacion) }}</pre>
+        <pre class="text-faded">Fecha fin matriculación {{ $parsearFecha(act.fechaFinMatriculacion) }}</pre>
+        <pre class="text-faded">Fecha inicio actividad{{ $parsearFecha(act.fechaInicio) }}</pre>
+        <pre class="text-faded">Fecha fin actividad {{ $parsearFecha(act.fechaFin) }}</pre>
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
@@ -82,7 +82,7 @@ export default {
               tematica: miJson.actividades[x].tematica,
               fechaInicio: miJson.actividades[x].fechaInicio,
               fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
-              fechaFin: miJson.actividades[x].temafechaFin,
+              fechaFin: miJson.actividades[x].fechaFin,
               fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
               
               

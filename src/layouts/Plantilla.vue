@@ -11,29 +11,38 @@
         </q-toolbar-title>
       </q-toolbar>
       <q-tabs color="primary">
+         <q-route-tab
+          icon="school"
+          to="/actprescursos"
+          exact
+          slot="title"
+          name="actprescursos"
+          label="Cursos presenciales"
+        />
+       <q-route-tab
+          icon="mode_comment"
+          to="/actprescharlas"
+          exact
+          slot="title"
+          name="actprescharlas"
+          label="Charlas"
+        />
+
         <q-route-tab
-          icon="event"
+          icon="extension"
+          to="/actprestalleres"
+          exact
+          slot="title"
+          name="actprestalleres"
+          label="Talleres"
+        />
+        <q-route-tab
+          icon="cloud"
           to="/actonline"
           exact
           slot="title"
           name="actonline"
           label="Actividades Online"
-        />
-        <q-route-tab
-          icon="pages"
-          to="/actpresencial"
-          exact
-          slot="title"
-          name="actpresencial"
-          label="Actividades Presenciales"
-        />
-        <q-route-tab
-          icon="face"
-          to="/suscripcion"
-          exact
-          slot="title"
-          name="suscripcion"
-          label="Mis suscripciones"
         />
       </q-tabs>
     </q-layout-header>
@@ -45,6 +54,10 @@
       <q-list no-border link inset-delimiter>
         <q-list-header>Enlaces</q-list-header>
 
+        <q-item to="/suscripciones">
+          <q-item-side icon="edit"/>
+          <q-item-main label="Suscripciones" sublabel="Selección de cursos por provincia"/>
+        </q-item>
         <q-item to="/actonline">
           <q-item-side icon="help_outline"/>
           <q-item-main label="Inicio" sublabel="De nuestra aplicacion"/>

@@ -56,9 +56,15 @@ export default {
   data() {
     return {
       provincias: [
+        { nombre: "Ávila", marcado: false, notificado: false },
+        { nombre: "Burgos", marcado: false, notificado: false },
         { nombre: "León", marcado: false, notificado: false },
+        { nombre: "Palencia", marcado: false, notificado: false },
+        { nombre: "Salamanca", marcado: false, notificado: false },
+        { nombre: "Segovia", marcado: false, notificado: false },
+        { nombre: "Soria", marcado: false, notificado: false },
+        { nombre: "Valladolid", marcado: false, notificado: false },
         { nombre: "Zamora", marcado: false, notificado: false },
-        { nombre: "Ávila", marcado: false, notificado: false }
       ]
     };
   },

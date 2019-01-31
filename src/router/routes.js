@@ -2,13 +2,15 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MyLayout.vue'),
+    component: () => import('layouts/Plantilla.vue'),
     children: [
-      { path: '', component: () => import('pages/actonline.vue') },
-      { path: '/actonline', component: () => import('pages/actonline.vue') },
-      { path: '/actpresencial', component: () => import('pages/actpresencial.vue') },
-      { path: '/suscripcion', component: () => import('pages/suscripcion.vue') },
-      { path: '/acercade', component: () => import('pages/acercade.vue') }
+      { path: '', component: () => import('pages/ActividadesOnline.vue') },
+      { path: '/actonline', component: () => import('pages/ActividadesOnline.vue') },
+      { path: '/actprescharlas', component: () => import('pages/ActividadesPresencialesCharlas.vue') },
+      { path: '/actprescursos', component: () => import('pages/ActividadesPresencialesCursos.vue') },
+      { path: '/actprestalleres', component: () => import('pages/ActividadesPresencialesTalleres.vue') },
+      { path: '/suscripciones', component: () => import('pages/Suscripciones.vue') },
+      { path: '/acercade', component: () => import('pages/AcercaDe.vue') }
     ]
   }
 ]

@@ -1,29 +1,42 @@
 <template>
   <q-page class="flex-top q-ma-lg">
     <q-item-tile label class="q-mb-md">
-      <strong>Actividades Presenciales</strong>
+      <strong>Cursos presenciales</strong>
     </q-item-tile>
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
       <q-card-title>
         {{ act.nombre }}
-        <div slot="right" class="row items-center">
-          <q-icon size="16px"/>&nbsp;
+        <span slot="subtitle">
+          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/> &nbsp;
           <small>{{act.tematica}}</small>
-        </div>
+        </span>
       </q-card-title>
       <q-card-main>
-        <pre class="text-faded">Fecha inicio matriculación {{ act.fechaInicioMatriculacion }}</pre>
-        <pre class="text-faded">Fecha fin matriculación {{ act.fechaFinMatriculacion }}</pre>
-        <pre class="text-faded">Fecha inicio actividad{{ act.fechaInicio }}</pre>
-        <pre class="text-faded">Fecha fin actividad {{ act.fechaFin }}</pre>
+         {{ act.descripcion }}
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
-      <q-card-actions>
-        <q-icon name="event"/>&nbsp;&nbsp;
+      <q-card-actions align="between">
+        <div>
+        <q-icon name="event_note"/>&nbsp;&nbsp;
+        <small><strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong></small>
+        </div>
+        <div>
+          <q-icon name="trending_up"/>&nbsp;&nbsp;
+          <small><strong>Nivel: {{ act.nivel }}</strong></small>
+        </div>
+      </q-card-actions> 
+      <q-card-actions align="between">
+        <div>
+          <q-icon name="event"/>&nbsp;&nbsp;
+          <small><strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong></small>
+        </div>
+        <div>
+          <q-icon name="watch_later"/>&nbsp;&nbsp;
+          <small><strong>Nº horas: {{ act.numeroHoras }}</strong></small>
+        </div>
       </q-card-actions>
-    </q-card>
-
+      </q-card>
   </q-page>
 </template>
 
@@ -43,7 +56,7 @@ export default {
     return {
       // URL para obtener datos JSON de ValenBisi
       endpoint:
-        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=charla&tipoActividad=curso&tipoActividad=taller&centro=leon",
+        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso&centro=valladolid",
       // Array con información de cada uno de las estacione
       actividades: []
     }
@@ -82,10 +95,10 @@ export default {
               tematica: miJson.actividades[x].tematica,
               fechaInicio: miJson.actividades[x].fechaInicio,
               fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
-              fechaFin: miJson.actividades[x].temafechaFin,
+              fechaFin: miJson.actividades[x].fechaFin,
               fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
-              
-              
+              numeroHoras: miJson.actividades[x].numeroHoras,
+              nivel: miJson.actividades[x].nivel
             };
             // Lo metemos en un array
             this.actividades.push(dato);
