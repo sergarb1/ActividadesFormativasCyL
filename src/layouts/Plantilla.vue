@@ -44,6 +44,14 @@
           name="actonline"
           label="Actividades Online"
         />
+        <q-route-tab
+          icon="star"
+          to="/favoritos"
+          exact
+          slot="title"
+          name="favoritos"
+          label="Favoritos"
+        />
       </q-tabs>
     </q-layout-header>
 
