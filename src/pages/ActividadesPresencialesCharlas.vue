@@ -876,13 +876,24 @@ export default {
               arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
             }
 
+
+            // Tratamos la descripcion elimiando CDATA y HTML
+            // Eliminamos CDATA
+            var miDescripcion = miJson.actividades[x].descripcion
+              .replace("<![CDATA[", "")
+              .replace("]]>", "");
+            // Truco para eliminar el texto en formato HTML y tenerlo normal
+            var parser = new DOMParser();
+            var dom = parser.parseFromString(
+              "<!doctype html><body>" + miDescripcion,
+              "text/html"
+            );
+            miDescripcion = dom.body.textContent;
+
             dato = {
               nombre: miJson.actividades[x].nombre,
               centro: miJson.actividades[x].centro,
-              descripcion: miJson.actividades[x].descripcion.replace(
-                /<[^>]+>/g,
-                ""
-              ),
+              descripcion: miDescripcion,
               tematica: miJson.actividades[x].tematica,
               fechaInicio: miJson.actividades[x].fechaInicio,
               fechaInicioMatriculacion:

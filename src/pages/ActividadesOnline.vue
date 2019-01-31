@@ -6,7 +6,13 @@
     <q-alert v-if="this.actividades.length==0" type="info">No hay actividades disponibles.</q-alert>
 
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
-      <q-card-title>
+      <q-card-title>        
+        <q-checkbox
+          v-model="act.favorito"
+          checked-icon="star"
+          unchecked-icon="star_border"
+          @input="guardarFavoritos();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+        />
         {{ act.nombre }}
         <span slot="subtitle">
           <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/> &nbsp;
@@ -106,17 +112,31 @@ export default {
             }
 
 
+            // Tratamos la descripcion elimiando CDATA y HTML
+            // Eliminamos CDATA
+            var miDescripcion = miJson.actividades[x].descripcion
+              .replace("<![CDATA[", "")
+              .replace("]]>", "");
+            // Truco para eliminar el texto en formato HTML y tenerlo normal
+            var parser = new DOMParser();
+            var dom = parser.parseFromString(
+              "<!doctype html><body>" + miDescripcion,
+              "text/html"
+            );
+            miDescripcion = dom.body.textContent;
+
 
             dato = {
               nombre: miJson.actividades[x].nombre,
-              descripcion: miJson.actividades[x].descripcion.replace(/<[^>]+>/g, ''),
+              descripcion: miDescripcion,
               tematica: miJson.actividades[x].tematica,
               fechaInicio: miJson.actividades[x].fechaInicio,
               fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
               fechaFin: miJson.actividades[x].fechaFin,
               fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
               tagsGenerados: arrayTags,
-              bolsaDePalabras: arrayMineria
+              bolsaDePalabras: arrayMineria,
+              favorito:false
             };
             // Lo metemos en un array
             this.actividades.push(dato);
@@ -131,6 +151,40 @@ export default {
     // Funcion que recibe un array y elimina duplicados
     eliminarDuplicados(names){
       return names.slice().sort(function(a,b){return a > b}).reduce(function(a,b){if (a.slice(-1)[0] !== b) a.push(b);return a;},[]);
+    },
+    // Función que guarda en localStorage un texto en formato JSON
+    // con los favoritos de cursos
+    guardarFavoritos() {
+      var actividadesFavoritas = [];
+
+      for (var x in this.actividades) {
+        if (this.actividades[x].favorito == true) {
+          actividadesFavoritas.push(this.actividades[x]);
+        }
+      }
+      localStorage.setItem(
+        "favoritos-online",
+        JSON.stringify(actividadesFavoritas)
+      );
+    },
+    // Función que carga del localStorage un texto en formato JSON
+    // con los favoritos de cursos
+    cargarFavoritos() {
+      if (localStorage.getItem("favoritos-online")) {
+        var fav = JSON.parse(localStorage.getItem("favoritos-online"));
+        // Rellenamos los favoritos
+        for (var x in fav) {
+          for (var y in this.actividades) {
+            if (
+              fav[x].nombre == this.actividades[y].nombre &&
+              fav[x].centro == this.actividades[y].centro &&
+              fav[x].fechaInicio == this.actividades[y].fechaInicio
+            ) {
+              this.actividades[y].favorito = true;
+            }
+          }
+        }
+      }
     }
   }
 };
