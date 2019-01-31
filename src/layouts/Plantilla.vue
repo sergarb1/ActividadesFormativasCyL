@@ -52,6 +52,14 @@
           name="favoritos"
           label="Favoritos"
         />
+        <q-route-tab
+          icon="transfer_within_a_station"
+          to="/recomendaciones"
+          exact
+          slot="title"
+          name="recomendaciones"
+          label="Recomendaciones"
+        />
       </q-tabs>
     </q-layout-header>
 
