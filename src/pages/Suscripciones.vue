@@ -10,6 +10,31 @@
         <q-collapsible group="somegroup" icon="face" label="Suscripciones" opened>
           <q-list link>
             <q-list-header>Marca las provincias a las que quieres suscribirte:</q-list-header>
+            <!-- Utilizamos un list para meter etiquetas con checkbox y toggle button
+            Este primero es un caso especial para marcar todas-->
+            <q-item tag="label">
+              <q-item-main>
+                <q-item-tile label>
+                  <!-- q-checkbox v-model="check2" color="primary" v-bind:label="curso.area"/ -->
+                  <q-checkbox
+                    color="primary"
+                    label="Todas"
+                    v-model="estadoTodas"
+                    @input="marcarTodas();guardar();"
+                  />
+                </q-item-tile>
+              </q-item-main>
+              <q-item-side right>
+                <q-toggle
+                  class="primary"
+                  v-model="estadoTodasNotificaciones"
+                  unchecked-icon="notifications_off"
+                  checked-icon="notifications_active"
+                  @input="marcarTodasNotificaciones();guardar();"
+                />
+              </q-item-side>
+            </q-item>
+
             <!-- Utilizamos un list para meter etiquetas con checkbox y toggle button -->
             <q-item tag="label" v-for="prov in provincias" :key="prov.nombre">
               <q-item-main>
@@ -64,18 +89,40 @@ export default {
         { nombre: "Segovia", marcado: false, notificado: false },
         { nombre: "Soria", marcado: false, notificado: false },
         { nombre: "Valladolid", marcado: false, notificado: false },
-        { nombre: "Zamora", marcado: false, notificado: false },
-      ]
+        { nombre: "Zamora", marcado: false, notificado: false }
+      ],
+      // Variables para la opcion "Todas" de las suscripciones y notificaciones
+      estadoTodas: false,
+      estadoTodasNotificaciones: false
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
-   if (localStorage.getItem("provincias")) {
+    if (localStorage.getItem("provincias")) {
       this.provincias = JSON.parse(localStorage.getItem("provincias"));
     }
   },
   // Metodos accesibles desde Vue
   methods: {
+    // Funcion que marca/desmarca todas
+    marcarTodas() {
+      var i;
+      for (i in this.provincias) {
+        this.provincias[i].marcado = this.estadoTodas;
+        // Si se desmarcan todas, tambien se desmarcan sus notificaciones
+        if (!this.estadoTodas) {
+          this.provincias[i].notificado = false;
+        }
+      }
+    }, // Funcion que marca todas las notificaciones de eventos marcados
+    marcarTodasNotificaciones() {
+      var i;
+      for (i in this.provincias) {
+        if (this.provincias[i].marcado)
+          this.provincias[i].notificado = this.estadoTodasNotificaciones;
+      }
+    },
+    // Función que guarda en localStorage un texto en formato JSON con el estado de las provincias
     guardar() {
       localStorage.setItem("provincias", JSON.stringify(this.provincias));
     }
