@@ -14,10 +14,13 @@
         </span>
       </q-card-title>
       <q-card-main>
-        <pre class="text-faded">Fecha inicio matriculación: {{ $parsearFecha(act.fechaInicioMatriculacion) }}</pre>
-        <pre class="text-faded">Fecha fin matriculación: {{ $parsearFecha(act.fechaFinMatriculacion) }}</pre>
         <pre class="text-faded">Fecha inicio actividad: {{ $parsearFecha(act.fechaInicio) }}</pre>
         <pre class="text-faded">Fecha fin actividad: {{ $parsearFecha(act.fechaFin) }}</pre>
+        <pre class="text-faded">Tags generados: {{ act.tagsGenerados }}</pre>
+        <pre class="text-faded">Bolsa de palabras para recomendado: {{ act.bolsaDePalabras }}</pre>
+        <div class="group">
+          <q-chip v-for='miTag in act.tagsGenerados'  :key="miTag"  color="primary">{{ miTag }}</q-chip>
+        </div>
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
@@ -37,6 +40,10 @@
 <script>
 // Importamos axios para realizar el Ajax
 import axios from "axios";
+// Importamos para eliminar StopWords
+import sw from 'stopword';
+// Importamos para procesamiento del lenguaje natural
+import natural from 'natural';
 
 export default {
   name: "Index",
@@ -67,17 +74,34 @@ export default {
       axios
         .get(this.endpoint)
         .then(response => {
+
           // Si, para coger este JSON debo hacer esta pirula
           console.log(response.data);
           var miJson = JSON.parse(JSON.stringify(response.data));
 
-          var x;
           // Vaciamos el array
           this.actividades = [];
           // Pasamos el contenido al array "actividades"
-          for (x in miJson.actividades) {
+          for (var x in miJson.actividades) {
             //Formamos el dato
             var dato;
+            // Array de palabras tras eliminar stopwords y realizar stemming
+            var arrayMineria=[];
+            // Array para palabras solo eliminado stopwords y simbolos extraños
+            var arrayTags=[];
+            // Obtenemos texto sin acentos y sin minusculas
+            var textoMineria=miJson.actividades[x].nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            // solo dejamos letras y espacios
+            textoMineria=textoMineria.replace(/[^a-z ]+/g, '');
+           
+            // Aplicamos stemming a cada palabra
+            arrayTags=sw.removeStopwords(textoMineria.split(" "),sw.es)
+            // Aplicamos Stemming a cada palabra
+            for(var i in arrayTags){
+              arrayMineria[i]=natural.PorterStemmerEs.stem(arrayTags[i]);
+            }
+
+
             dato = {
               nombre: miJson.actividades[x].nombre,
               descripcion: miJson.actividades[x].descripcion.replace(/<[^>]+>/g, ''),
@@ -86,14 +110,12 @@ export default {
               fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
               fechaFin: miJson.actividades[x].fechaFin,
               fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
-              
-              
+              tagsGenerados: arrayTags,
+              bolsaDePalabras: arrayMineria
             };
             // Lo metemos en un array
             this.actividades.push(dato);
           }
-          // Actualizamos la ultima fecha de actualizacion
-          this.ultimaActualizacion = new Date().toLocaleString();
         })
         // En caso de error, mostramos el error para facilitar depuración
         .catch(error => {

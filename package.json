@@ -10,7 +10,10 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "natural": "^0.6.3",
+    "stopword": "^0.1.13",
+    "wordnet-db": "^3.1.11"
   },
   "devDependencies": {
     "quasar-cli": "^0.17.0",
