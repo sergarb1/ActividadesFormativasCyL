@@ -22,7 +22,6 @@
       <q-card-main>
         <pre class="text-faded">Fecha inicio actividad: {{ $parsearFecha(act.fechaInicio) }}</pre>
         <pre class="text-faded">Fecha fin actividad: {{ $parsearFecha(act.fechaFin) }}</pre>
-        <pre class="text-faded">Bolsa de palabras para recomendado: {{ act.bolsaDePalabras }}</pre>
         <div class="group">
           <q-chip v-for='miTag in act.tagsGenerados'  :key="miTag"  color="primary">{{ miTag }}</q-chip>
         </div>
