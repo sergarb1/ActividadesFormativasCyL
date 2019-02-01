@@ -11,7 +11,7 @@
           v-model="act.favorito"
           checked-icon="favorite"
           unchecked-icon="favorite_border"
-          @input="sergar1$guardarFavoritos(actividades,'favoritos-online'); if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+          @input="$guardarFavoritos(actividades,'favoritos-online'); if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
         />
         {{ act.nombre }}
         <span slot="subtitle">
