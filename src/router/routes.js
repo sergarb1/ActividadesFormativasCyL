@@ -12,7 +12,8 @@ const routes = [
       { path: '/suscripciones', component: () => import('pages/Suscripciones.vue') },
       { path: '/acercade', component: () => import('pages/AcercaDe.vue') },
       { path: '/favoritos', component: () => import('pages/Favoritos.vue') },
-      { path: '/recomendaciones', component: () => import('pages/Recomendaciones.vue') }
+      { path: '/recomendaciones', component: () => import('pages/Recomendaciones.vue') },
+      { path: '/login', component: () => import('pages/Login.vue') }
     ]
   }
 ]

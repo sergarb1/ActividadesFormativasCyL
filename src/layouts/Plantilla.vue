@@ -6,8 +6,10 @@
           <q-icon name="menu"/>
         </q-btn>
 
-        <q-toolbar-title>Actividades Castilla y León
-          <div slot="subtitle">Para todos los públicos</div>
+        <q-toolbar-title>
+            <img src="../assets/sigecyl.png" style="height:30px"/>
+          Castilla y León Digital
+          <!--div slot="subtitle">Para todos los públicos</div-->
         </q-toolbar-title>
       </q-toolbar>
       <q-tabs color="primary">
@@ -17,7 +19,7 @@
           exact
           slot="title"
           name="actprescursos"
-          label="Cursos presenciales"
+          label="Cursos"
         />
        <q-route-tab
           icon="mode_comment"
@@ -42,7 +44,7 @@
           exact
           slot="title"
           name="actonline"
-          label="Actividades Online"
+          label="Online"
         />
         <q-route-tab
           icon="star"

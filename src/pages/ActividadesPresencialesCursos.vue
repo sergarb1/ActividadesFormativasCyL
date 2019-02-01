@@ -7,20 +7,36 @@
 
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre+act.centro+act.fechaInicio">
       <q-card-title>
-        <q-checkbox
-          v-model="act.favorito"
-          checked-icon="favorite"
-          unchecked-icon="favorite_border"
-          @input="$guardarFavoritos(actividades,'favoritos-cursos');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-        />
         {{ act.nombre }}
-        <span slot="subtitle">
-          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-          <small>{{act.tematica}}</small>
-        </span>
+        <div slot="right" class="row items-center">
+          <q-checkbox
+            v-model="act.favorito"
+            checked-icon="favorite"
+            unchecked-icon="favorite_border"
+            @input="$guardarFavoritos(actividades,'favoritos-cursos');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
+          /> 
+        </div>
+        <div slot="subtitle">
+          <q-icon name="room" size="16px"/>&nbsp;
+          <small>{{act.centro}}</small>
+        </div>
       </q-card-title>
       <q-card-main>
-        {{ act.descripcion }}
+        <q-collapsible label="Ver información">
+          <div>
+            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="20px"/>&nbsp;
+            <small>{{act.tematica}}</small>
+          </div>
+            <br/>
+            {{ act.descripcion }}
+            <br/><br/>
+          <q-icon v-if="act.aviso" name="warning"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.aviso }}</strong>
+          </small>
+            <br/><br/>
+            <q-btn push rounded size="sm" color="secondary" icon-right="directions" label="Matricularse" @click="$router.push('/login')"/>
+        </q-collapsible>
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
@@ -54,7 +70,22 @@
       </q-card-actions>
       <q-card-actions align="between">
         <div>
-          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
+          <!-- q-icon name="warning"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.aviso }}</strong>
+          </small -->
+        </div>
+        <div>
+          <q-icon name="person"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
+          </small>
+        </div>
+      </q-card-actions>
+      <q-card-separator/>
+      <q-card-actions align="between">
+        <div>
+          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
         </div>
       </q-card-actions>
     </q-card>
@@ -105,7 +136,6 @@ export default {
         for (x in provTmp) {
           if (provTmp[x].marcado) {
             // Pasamos el centro sin acentos y en minusculas
-
             var centroTMP = this.$eliminarAcentos(
               provTmp[x].nombre
             ).toLowerCase();
@@ -165,18 +195,25 @@ export default {
               var miDescripcion = this.$CDATAToText(
                 miJson.actividades[x].descripcion
               );
+
+              var miAviso = this.$CDATAToText(
+                miJson.actividades[x].aviso
+              );
               // Construimos el dato
               dato = {
                 nombre: miJson.actividades[x].nombre,
                 centro: miJson.actividades[x].centro,
                 descripcion: miDescripcion,
                 tematica: miJson.actividades[x].tematica,
+                nivel: miJson.actividades[x].nivel,
+                numeroHoras: miJson.actividades[x].numeroHoras,
                 fechaInicio: miJson.actividades[x].fechaInicio,
-                fechaInicioMatriculacion:
-                  miJson.actividades[x].fechaInicioMatriculacion,
+                fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
                 fechaFin: miJson.actividades[x].fechaFin,
-                fechaFinMatriculacion:
-                  miJson.actividades[x].fechaFinMatriculacion,
+                fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
+                numeroPlazas: miJson.actividades[x].numeroPlazas,
+                numeroSolicitudes: miJson.actividades[x].numeroSolicitudes,
+                aviso: miAviso,
                 tagsGenerados: arrayTags,
                 bolsaDePalabras: arrayMineria,
                 favorito: false
