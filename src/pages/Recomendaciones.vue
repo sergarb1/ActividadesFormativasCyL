@@ -13,7 +13,6 @@
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-        
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -74,7 +73,6 @@
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-    
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -135,7 +133,6 @@
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
-
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -196,7 +193,6 @@
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
- 
           {{ act.nombre }}
           <span slot="subtitle">
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
@@ -271,22 +267,22 @@ export default {
       // Array con información de cada uno de las estacione
       actividadesCursos: [],
       actividadesCursosPalabras: [],
-      
+
       actividadesCharlas: [],
       actividadesCharlasPalabras: [],
       actividadesTalleres: [],
       actividadesTalleresPalabras: [],
       actividadesOnline: [],
       actividadesOnlinePalabras: [],
-      datosCursos : [],
-      datosCharlas : [],
-      datosTalleres : [],
-      datosOnline : [],
+      datosCursos: [],
+      datosCharlas: [],
+      datosTalleres: [],
+      datosOnline: [],
 
       recomCursos: [],
       recomCharlas: [],
       recomTalleres: [],
-      recomOnline: [],
+      recomOnline: []
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
@@ -310,7 +306,6 @@ export default {
         }
       }
 
-
       if (localStorage.getItem("datos-charlas")) {
         var tmp = JSON.parse(localStorage.getItem("datos-charlas"));
         for (var x in tmp) {
@@ -330,7 +325,6 @@ export default {
         }
       }
 
-
       this.actividadesCursos = [];
       this.actividadesCursosPalabras = [];
       this.actividadesCharlas = [];
@@ -341,42 +335,34 @@ export default {
         var tmp = JSON.parse(localStorage.getItem("favoritos-cursos"));
         for (var x in tmp) {
           this.actividadesCursos.push(tmp[x]);
-          for(var y in tmp[x].bolsaDePalabras)
+          for (var y in tmp[x].bolsaDePalabras)
             this.actividadesCursosPalabras.push(tmp[x].bolsaDePalabras[y]);
         }
       }
-
-      
-      //this.actividadesCursosPalabras=this.eliminarDuplicados(this.actividadesCursosPalabras);
 
       if (localStorage.getItem("favoritos-charlas")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-charlas"));
         for (var x in tmp) {
           this.actividadesCharlas.push(tmp[x]);
 
-          for(var y in tmp[x].bolsaDePalabras)
+          for (var y in tmp[x].bolsaDePalabras)
             this.actividadesCharlasPalabras.push(tmp[x].bolsaDePalabras[y]);
-
-
-          
         }
       }
       if (localStorage.getItem("favoritos-talleres")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-talleres"));
         for (var x in tmp) {
           this.actividadesTalleres.push(tmp[x]);
-          for(var y in tmp[x].bolsaDePalabras)
+          for (var y in tmp[x].bolsaDePalabras)
             this.actividadesTalleresPalabras.push(tmp[x].bolsaDePalabras[y]);
-
         }
       }
       if (localStorage.getItem("favoritos-online")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-online"));
         for (var x in tmp) {
           this.actividadesOnline.push(tmp[x]);
-          for(var y in tmp[x].bolsaDePalabras)
+          for (var y in tmp[x].bolsaDePalabras)
             this.actividadesOnlinePalabras.push(tmp[x].bolsaDePalabras[y]);
-
         }
       }
 
@@ -387,214 +373,212 @@ export default {
       this.recomendacionesOnline();
     },
     //Genera recomendaciones de cursos
-    recomendacionesCursos(){
-      this.recomCursos=[];
+    recomendacionesCursos() {
+      this.recomCursos = [];
 
-      for(var i in this.datosCursos){
-        this.datosCursos[i].puntosRecomendacion=0;
-        for(var j in this.actividadesCursos){
-          if(this.datosCursos[i].nombre==this.actividadesCursos[j].nombre){
-            
-            this.datosCursos[i].puntosRecomendacion=-1;
+      for (var i in this.datosCursos) {
+        this.datosCursos[i].puntosRecomendacion = 0;
+        for (var j in this.actividadesCursos) {
+          if (this.datosCursos[i].nombre == this.actividadesCursos[j].nombre) {
+            this.datosCursos[i].puntosRecomendacion = -1;
             break;
           }
         }
-        if(this.datosCursos[i].puntosRecomendacion==0){
-          
-          for(var k in this.datosCursos[i].bolsaDePalabras){
-            for(var j in this.actividadesCursosPalabras){
-              if(this.actividadesCursosPalabras[j]==this.datosCursos[i].bolsaDePalabras[k]){
+        if (this.datosCursos[i].puntosRecomendacion == 0) {
+          for (var k in this.datosCursos[i].bolsaDePalabras) {
+            for (var j in this.actividadesCursosPalabras) {
+              if (
+                this.actividadesCursosPalabras[j] ==
+                this.datosCursos[i].bolsaDePalabras[k]
+              ) {
                 this.datosCursos[i].puntosRecomendacion++;
                 break;
-              } 
+              }
             }
           }
         }
       }
 
-      this.datosCursos.sort( function(a,b){
-          if (a.puntosRecomendacion > b.puntosRecomendacion)
-            return -1;
-          if (a.puntosRecomendacion < b.puntosRecomendacion)
-            return 1;
-          return 0;
+      // Ordenamos para obtener primero los elementos con mayor puntuacion de recomendacion
+      this.datosCursos.sort(function(a, b) {
+        if (a.puntosRecomendacion > b.puntosRecomendacion) return -1;
+        if (a.puntosRecomendacion < b.puntosRecomendacion) return 1;
+        return 0;
       });
 
-         // MEtemos las recomendaciones
-      var alcanzados=0;
-      for (var i=0;alcanzados<3 && i<this.datosCursos.length;i++){
-        var encontrado=false;
-        for (var j in this.recomCursos){
+      // MEtemos las recomendaciones
+      var alcanzados = 0;
+      for (var i = 0; alcanzados < 3 && i < this.datosCursos.length; i++) {
+        var encontrado = false;
+        for (var j in this.recomCursos) {
           // Ya recomendado uno con nombre igual
-          if(this.recomCursos[j].nombre==this.datosCursos[i].nombre){
-            encontrado=true;
+          if (this.recomCursos[j].nombre == this.datosCursos[i].nombre) {
+            encontrado = true;
             break;
           }
         }
-        if(!encontrado){
+        if (!encontrado) {
           this.recomCursos.push(this.datosCursos[i]);
           alcanzados++;
         }
       }
     },
     //Genera recomendaciones de charlas
-    recomendacionesCharlas(){
-      this.recomCharlas=[];
+    recomendacionesCharlas() {
+      this.recomCharlas = [];
 
-      for(var i in this.datosCharlas){
-        this.datosCharlas[i].puntosRecomendacion=0;
-        for(var j in this.actividadesCharlas){
-          if(this.datosCharlas[i].nombre==this.actividadesCharlas[j].nombre){
-            
-            this.datosCharlas[i].puntosRecomendacion=-1;
+      for (var i in this.datosCharlas) {
+        this.datosCharlas[i].puntosRecomendacion = 0;
+        for (var j in this.actividadesCharlas) {
+          if (
+            this.datosCharlas[i].nombre == this.actividadesCharlas[j].nombre
+          ) {
+            this.datosCharlas[i].puntosRecomendacion = -1;
             break;
           }
         }
-        if(this.datosCharlas[i].puntosRecomendacion==0){
-          
-          for(var k in this.datosCharlas[i].bolsaDePalabras){
-            for(var j in this.actividadesCharlasPalabras){
-              if(this.actividadesCharlasPalabras[j]==this.datosCharlas[i].bolsaDePalabras[k]){
+        if (this.datosCharlas[i].puntosRecomendacion == 0) {
+          for (var k in this.datosCharlas[i].bolsaDePalabras) {
+            for (var j in this.actividadesCharlasPalabras) {
+              if (
+                this.actividadesCharlasPalabras[j] ==
+                this.datosCharlas[i].bolsaDePalabras[k]
+              ) {
                 this.datosCharlas[i].puntosRecomendacion++;
                 break;
-              } 
+              }
             }
           }
         }
       }
 
+      // Ordenamos para obtener primero los elementos con mayor puntuacion de recomendacion
+      this.datosCharlas.sort(function(a, b) {
+        if (a.puntosRecomendacion > b.puntosRecomendacion) return -1;
+        if (a.puntosRecomendacion < b.puntosRecomendacion) return 1;
+        return 0;
+      });
+
       // MEtemos las recomendaciones
-      var alcanzados=0;
-      for (var i=0;alcanzados<3 && i<this.datosCharlas.length;i++){
-        var encontrado=false;
-        for (var j in this.recomCharlas){
+      var alcanzados = 0;
+      for (var i = 0; alcanzados < 3 && i < this.datosCharlas.length; i++) {
+        var encontrado = false;
+        for (var j in this.recomCharlas) {
           // Ya recomendado uno con nombre igual
-          if(this.recomCharlas[j].nombre==this.datosCharlas[i].nombre){
-            encontrado=true;
+          if (this.recomCharlas[j].nombre == this.datosCharlas[i].nombre) {
+            encontrado = true;
             break;
           }
         }
-        if(!encontrado){
+        if (!encontrado) {
           this.recomCharlas.push(this.datosCharlas[i]);
           alcanzados++;
         }
       }
-    },    
+    },
     //Genera recomendaciones de talleres
-    recomendacionesTalleres(){
-      this.recomTalleres=[];
+    recomendacionesTalleres() {
+      this.recomTalleres = [];
 
-      for(var i in this.datosTalleres){
-        this.datosTalleres[i].puntosRecomendacion=0;
-        for(var j in this.actividadesTalleres){
-          if(this.datosTalleres[i].nombre==this.actividadesTalleres[j].nombre){
-            
-            this.datosTalleres[i].puntosRecomendacion=-1;
+      for (var i in this.datosTalleres) {
+        this.datosTalleres[i].puntosRecomendacion = 0;
+        for (var j in this.actividadesTalleres) {
+          if (
+            this.datosTalleres[i].nombre == this.actividadesTalleres[j].nombre
+          ) {
+            this.datosTalleres[i].puntosRecomendacion = -1;
             break;
           }
         }
-        if(this.datosTalleres[i].puntosRecomendacion==0){
-          
-          for(var k in this.datosTalleres[i].bolsaDePalabras){
-            for(var j in this.actividadesTalleresPalabras){
-             if(this.actividadesTalleresPalabras[j]==this.datosTalleres[i].bolsaDePalabras[k]){
+        if (this.datosTalleres[i].puntosRecomendacion == 0) {
+          for (var k in this.datosTalleres[i].bolsaDePalabras) {
+            for (var j in this.actividadesTalleresPalabras) {
+              if (
+                this.actividadesTalleresPalabras[j] ==
+                this.datosTalleres[i].bolsaDePalabras[k]
+              ) {
                 this.datosTalleres[i].puntosRecomendacion++;
                 break;
-              } 
+              }
             }
           }
         }
       }
 
-      this.datosTalleres.sort( function(a,b){
-          if (a.puntosRecomendacion > b.puntosRecomendacion)
-            return -1;
-          if (a.puntosRecomendacion < b.puntosRecomendacion)
-            return 1;
-          return 0;
+      // Ordenamos para obtener primero los elementos con mayor puntuacion de recomendacion
+      this.datosTalleres.sort(function(a, b) {
+        if (a.puntosRecomendacion > b.puntosRecomendacion) return -1;
+        if (a.puntosRecomendacion < b.puntosRecomendacion) return 1;
+        return 0;
       });
 
-      
       // MEtemos las recomendaciones
-      var alcanzados=0;
-      for (var i=0;alcanzados<3 && i<this.datosTalleres.length;i++){
-        var encontrado=false;
-        for (var j in this.recomTalleres){
+      var alcanzados = 0;
+      for (var i = 0; alcanzados < 3 && i < this.datosTalleres.length; i++) {
+        var encontrado = false;
+        for (var j in this.recomTalleres) {
           // Ya recomendado uno con nombre igual
-          if(this.recomTalleres[j].nombre==this.datosTalleres[i].nombre){
-            encontrado=true;
+          if (this.recomTalleres[j].nombre == this.datosTalleres[i].nombre) {
+            encontrado = true;
             break;
           }
         }
-        if(!encontrado){
+        if (!encontrado) {
           this.recomTalleres.push(this.datosTalleres[i]);
           alcanzados++;
         }
       }
     },
     //Genera recomendaciones de talleres
-    recomendacionesOnline(){
-      this.recomOnline=[];
+    recomendacionesOnline() {
+      this.recomOnline = [];
 
-      for(var i in this.datosOnline){
-        this.datosOnline[i].puntosRecomendacion=0;
-        for(var j in this.actividadesOnline){
-          if(this.datosOnline[i].nombre==this.actividadesOnline[j].nombre){
-            
-            this.datosOnline[i].puntosRecomendacion=-1;
+      for (var i in this.datosOnline) {
+        this.datosOnline[i].puntosRecomendacion = 0;
+        for (var j in this.actividadesOnline) {
+          if (this.datosOnline[i].nombre == this.actividadesOnline[j].nombre) {
+            this.datosOnline[i].puntosRecomendacion = -1;
             break;
           }
         }
-        if(this.datosOnline[i].puntosRecomendacion==0){
-          
-          for(var k in this.datosOnline[i].bolsaDePalabras){
-            for(var j in this.actividadesOnlinePalabras){
-             if(this.actividadesOnlinePalabras[j]==this.datosOnline[i].bolsaDePalabras[k]){
+        if (this.datosOnline[i].puntosRecomendacion == 0) {
+          for (var k in this.datosOnline[i].bolsaDePalabras) {
+            for (var j in this.actividadesOnlinePalabras) {
+              if (
+                this.actividadesOnlinePalabras[j] ==
+                this.datosOnline[i].bolsaDePalabras[k]
+              ) {
                 this.datosOnline[i].puntosRecomendacion++;
                 break;
-              } 
+              }
             }
           }
         }
       }
-
-      this.datosOnline.sort( function(a,b){
-          if (a.puntosRecomendacion > b.puntosRecomendacion)
-            return -1;
-          if (a.puntosRecomendacion < b.puntosRecomendacion)
-            return 1;
-          return 0;
+      // Ordenamos para obtener primero los elementos con mayor puntuacion de recomendacion
+      this.datosOnline.sort(function(a, b) {
+        if (a.puntosRecomendacion > b.puntosRecomendacion) return -1;
+        if (a.puntosRecomendacion < b.puntosRecomendacion) return 1;
+        return 0;
       });
 
       // MEtemos las recomendaciones
-      var alcanzados=0;
-      for (var i=0;alcanzados<3 && i<this.datosOnline.length;i++){
-        var encontrado=false;
-        for (var j in this.recomOnline){
+      var alcanzados = 0;
+      for (var i = 0; alcanzados < 3 && i < this.datosOnline.length; i++) {
+        var encontrado = false;
+        for (var j in this.recomOnline) {
           // Ya recomendado uno con nombre igual
-          if(this.recomOnline[j].nombre==this.datosOnline[i].nombre){
-            encontrado=true;
+          if (this.recomOnline[j].nombre == this.datosOnline[i].nombre) {
+            encontrado = true;
             break;
           }
         }
-        if(!encontrado){
+        if (!encontrado) {
           this.recomOnline.push(this.datosOnline[i]);
           alcanzados++;
         }
       }
-    },
-        // Funcion que recibe un array y elimina duplicados
-    eliminarDuplicados(names) {
-      return names
-        .slice()
-        .sort(function(a, b) {
-          return a > b;
-        })
-        .reduce(function(a, b) {
-          if (a.slice(-1)[0] !== b) a.push(b);
-          return a;
-        }, []);
-    },
+    }
   }
 };
 </script>

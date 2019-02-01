@@ -1,6 +1,5 @@
 <template>
   <q-page class="flex-top q-ma-lg">
-
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Cursos">
       <q-item-tile label class="q-mb-md">
@@ -16,9 +15,9 @@
         <q-card-title>
           <q-checkbox
             v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="guardarFavoritosCursos();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+            checked-icon="favorite"
+            unchecked-icon="favorite_border"
+            @input="$guardarFavoritos(actividadesCursos,'favoritos-cursos'); this.getEstadoActividades();  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
           />
           {{ act.nombre }}
           <span slot="subtitle">
@@ -84,7 +83,7 @@
             v-model="act.favorito"
             checked-icon="star"
             unchecked-icon="star_border"
-            @input="guardarFavoritosCharlas();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+            @input="$guardarFavoritos(actividadesCharlas,'favoritos-charlas');this.getEstadoActividades();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
           />
           {{ act.nombre }}
           <span slot="subtitle">
@@ -150,7 +149,7 @@
             v-model="act.favorito"
             checked-icon="star"
             unchecked-icon="star_border"
-            @input="guardarFavoritosTalleres();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+            @input="$guardarFavoritos(actividadesTalleres,'favoritos-talleres'); this.getEstadoActividades();  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
           />
           {{ act.nombre }}
           <span slot="subtitle">
@@ -199,9 +198,8 @@
       </q-card>
     </q-collapsible>
     <!-- fin collapsible talleres -->
-
-        <!-- Collapsible online -->
-    <q-collapsible  icon="cloud" label="Online">
+    <!-- Collapsible online -->
+    <q-collapsible icon="cloud" label="Online">
       <q-item-tile label class="q-mb-md">
         <strong>Favoritos</strong>
       </q-item-tile>
@@ -217,7 +215,7 @@
             v-model="act.favorito"
             checked-icon="star"
             unchecked-icon="star_border"
-            @input="guardarFavoritosOnline();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+            @input="$guardarFavoritos(actividadesOnline,'favoritos-online'); this.getEstadoActividades();  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
           />
           {{ act.nombre }}
           <span slot="subtitle">
@@ -335,82 +333,6 @@ export default {
           this.actividadesOnline.push(tmp[x]);
         }
       }
-    },
-    // Funcion que recibe un array y elimina duplicados
-    eliminarDuplicados(names) {
-      return names
-        .slice()
-        .sort(function(a, b) {
-          return a > b;
-        })
-        .reduce(function(a, b) {
-          if (a.slice(-1)[0] !== b) a.push(b);
-          return a;
-        }, []);
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosCursos() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesCursos) {
-        if (this.actividadesCursos[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesCursos[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-cursos",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosCharlas() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesCharlas) {
-        if (this.actividadesCharlas[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesCharlas[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-charlas",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosTalleres() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesTalleres) {
-        if (this.actividadesTalleres[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesTalleres[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-talleres",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
-    },
-    // Función que guarda en localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    guardarFavoritosOnline() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividadesOnline) {
-        if (this.actividadesOnline[x].favorito == true) {
-          actividadesFavoritas.push(this.actividadesOnline[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-online",
-        JSON.stringify(actividadesFavoritas)
-      );
-      this.getEstadoActividades();
     }
   }
 };

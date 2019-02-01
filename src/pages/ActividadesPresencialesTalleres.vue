@@ -10,8 +10,8 @@
       <q-card-title>
         <q-checkbox
           v-model="act.favorito"
-          checked-icon="star"
-          unchecked-icon="star_border"
+          checked-icon="favorite"
+          unchecked-icon="favorite_border"
           @input="$guardarFavoritos(actividades,'favoritos-talleres');   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
         />
         {{ act.nombre }}
@@ -83,10 +83,9 @@ export default {
         for (x in provTmp) {
           if (provTmp[x].marcado) {
             // Pasamos el centro sin acentos y en minusculas
-            var centroTMP = provTmp[x].nombre
-              .normalize("NFD")
-              .replace(/[\u0300-\u036f]/g, "")
-              .toLowerCase();
+            var centroTMP = this.$eliminarAcentos(
+              provTmp[x].nombre
+            ).toLowerCase();
             this.getEstadoActividades(centroTMP);
           }
         }
@@ -105,77 +104,69 @@ export default {
           // Si, para coger este JSON debo hacer esta pirula
           console.log(response.data);
           var miJson = JSON.parse(JSON.stringify(response.data));
+          // Si hay actividades...
+          if (typeof miJson.actividades !== "undefined") {
+            // Pasamos el contenido al array "actividades"
+            for (var x in miJson.actividades) {
+              //Formamos el dato
+              var dato;
+              // Array de palabras tras eliminar stopwords y realizar stemming
+              var arrayMineria = [];
+              // Array para palabras solo eliminado stopwords y simbolos extraños
+              var arrayTags = [];
+              // Obtenemos texto sin acentos y sin minusculas
+              var textoMineria = this.$eliminarAcentos(
+                miJson.actividades[x].nombre
+              ).toLowerCase();
+              // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
+              // se convierten en un solo espacio
+              textoMineria = this.$soloMinusculasYEspacios(textoMineria);
 
-          // Pasamos el contenido al array "actividades"
-          for (var x in miJson.actividades) {
-            //Formamos el dato
-            var dato;
-            // Array de palabras tras eliminar stopwords y realizar stemming
-            var arrayMineria = [];
-            // Array para palabras solo eliminado stopwords y simbolos extraños
-            var arrayTags = [];
-            // Obtenemos texto sin acentos y sin minusculas
-            var textoMineria = miJson.actividades[x].nombre
-              .normalize("NFD")
-              .replace(/[\u0300-\u036f]/g, "")
-              .toLowerCase();
-            // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
-            // se convierten en un solo espacio
-            textoMineria = textoMineria
-              .replace(/[^a-z ]+/g, "")
-              .replace(/\s\s+/g, " ");
+              // Eliminamos stop word generales mas algunas que ponemos custom
+              arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
+              arrayTags = sw.removeStopwords(arrayTags, this.$misStopWords);
 
-            // Eliminamos stop word generales mas algunas que ponemos custom   
-            arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
-            arrayTags=sw.removeStopwords(arrayTags,this.$misStopWords);
-         
-         
+              // Eliminamos duplicados
+              arrayTags = this.$eliminarDuplicados(arrayTags);
+              arrayTags.sort();
+              // Aplicamos Stemming a cada palabra
+              for (var i in arrayTags) {
+                arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
+              }
 
-            // Eliminamos duplicados
-            arrayTags = this.$eliminarDuplicados(arrayTags);
-            arrayTags.sort();
-            // Aplicamos Stemming a cada palabra
-            for (var i in arrayTags) {
-              arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
+              // Tratamos la descripcion elimiando CDATA y HTML
+              // Eliminamos CDATA
+              var miDescripcion = this.$CDATAToText(
+                miJson.actividades[x].descripcion
+              );
+
+              dato = {
+                nombre: miJson.actividades[x].nombre,
+                centro: miJson.actividades[x].centro,
+                descripcion: miDescripcion,
+                tematica: miJson.actividades[x].tematica,
+                fechaInicio: miJson.actividades[x].fechaInicio,
+                fechaInicioMatriculacion:
+                  miJson.actividades[x].fechaInicioMatriculacion,
+                fechaFin: miJson.actividades[x].fechaFin,
+                fechaFinMatriculacion:
+                  miJson.actividades[x].fechaFinMatriculacion,
+                tagsGenerados: arrayTags,
+                bolsaDePalabras: arrayMineria,
+                favorito: false
+              };
+              // Lo metemos en un array
+              this.actividades.push(dato);
             }
-
-
-            // Tratamos la descripcion elimiando CDATA y HTML
-            // Eliminamos CDATA
-            var miDescripcion = miJson.actividades[x].descripcion
-              .replace("<![CDATA[", "")
-              .replace("]]>", "");
-            // Truco para eliminar el texto en formato HTML y tenerlo normal
-            var parser = new DOMParser();
-            var dom = parser.parseFromString(
-              "<!doctype html><body>" + miDescripcion,
-              "text/html"
-            );
-            miDescripcion = dom.body.textContent;
-
-            dato = {
-              nombre: miJson.actividades[x].nombre,
-              centro: miJson.actividades[x].centro,
-              descripcion: miDescripcion,
-              tematica: miJson.actividades[x].tematica,
-              fechaInicio: miJson.actividades[x].fechaInicio,
-              fechaInicioMatriculacion:
-                miJson.actividades[x].fechaInicioMatriculacion,
-              fechaFin: miJson.actividades[x].fechaFin,
-              fechaFinMatriculacion:
-                miJson.actividades[x].fechaFinMatriculacion,
-              tagsGenerados: arrayTags,
-              bolsaDePalabras: arrayMineria,
-              favorito: false
-            };
-            // Lo metemos en un array
-            this.actividades.push(dato);
           }
           // actualizamos favoritos
           this.cargarFavoritos("favoritos-talleres");
-          
+
           // Salvo en localstorage
-          localStorage.setItem("datos-talleres",JSON.stringify(this.actividades));
+          localStorage.setItem(
+            "datos-talleres",
+            JSON.stringify(this.actividades)
+          );
         })
         // En caso de error, mostramos el error para facilitar depuración
         .catch(error => {

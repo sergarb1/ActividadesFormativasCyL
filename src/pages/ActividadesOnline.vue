@@ -6,16 +6,16 @@
     <q-alert v-if="this.actividades.length==0" type="info">No hay actividades disponibles.</q-alert>
 
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
-      <q-card-title>        
+      <q-card-title>
         <q-checkbox
           v-model="act.favorito"
-          checked-icon="star"
-          unchecked-icon="star_border"
-          @input="$guardarFavoritos(actividades,'favoritos-online'); if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+          checked-icon="favorite"
+          unchecked-icon="favorite_border"
+          @input="sergar1$guardarFavoritos(actividades,'favoritos-online'); if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
         />
         {{ act.nombre }}
         <span slot="subtitle">
-          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/> &nbsp;
+          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
           <small>{{act.tematica}}</small>
         </span>
       </q-card-title>
@@ -23,7 +23,7 @@
         <pre class="text-faded">Fecha inicio actividad: {{ $parsearFecha(act.fechaInicio) }}</pre>
         <pre class="text-faded">Fecha fin actividad: {{ $parsearFecha(act.fechaFin) }}</pre>
         <div class="group">
-          <q-chip v-for='miTag in act.tagsGenerados'  :key="miTag"  color="primary">{{ miTag }}</q-chip>
+          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
         </div>
         <q-item-main/>
       </q-card-main>
@@ -32,7 +32,6 @@
         <q-icon name="event"/>&nbsp;&nbsp;
       </q-card-actions>
     </q-card>
-
   </q-page>
 </template>
 
@@ -45,9 +44,9 @@
 // Importamos axios para realizar el Ajax
 import axios from "axios";
 // Importamos para eliminar StopWords
-import sw from 'stopword';
+import sw from "stopword";
 // Importamos para procesamiento del lenguaje natural
-import natural from 'natural';
+import natural from "natural";
 
 export default {
   name: "Index",
@@ -58,8 +57,7 @@ export default {
       endpoint:
         "https://admin.sigecyl.es/servicios/actividades/actividadesOnline",
       // Array con información de cada uno de las estacione
-      actividades: [],
-   
+      actividades: []
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
@@ -78,75 +76,75 @@ export default {
       axios
         .get(this.endpoint)
         .then(response => {
-
           // Si, para coger este JSON debo hacer esta pirula
           console.log(response.data);
           var miJson = JSON.parse(JSON.stringify(response.data));
 
           // Vaciamos el array
           this.actividades = [];
-          // Pasamos el contenido al array "actividades"
-          for (var x in miJson.actividades) {
-            //Formamos el dato
-            var dato;
-           // Array de palabras tras eliminar stopwords y realizar stemming
-            var arrayMineria=[];
-            // Array para palabras solo eliminado stopwords y simbolos extraños
-            var arrayTags=[];
-            // Obtenemos texto sin acentos y sin minusculas
-            var textoMineria=miJson.actividades[x].nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-            // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
-            // se convierten en un solo espacio
-            textoMineria=textoMineria.replace(/[^a-z ]+/g, '').replace(/\s\s+/g, ' ');
-             // Eliminamos stop word generales mas algunas que ponemos custom
-            
-            arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
-            arrayTags=sw.removeStopwords(arrayTags,this.$misStopWords);
-         
-            // Eliminamos duplicados
-            arrayTags=this.$eliminarDuplicados(arrayTags);
+          // Si hay actividades...
+          if (typeof miJson.actividades !== "undefined") {
+            // Pasamos el contenido al array "actividades"
+            for (var x in miJson.actividades) {
+              //Formamos el dato
+              var dato;
+              // Array de palabras tras eliminar stopwords y realizar stemming
+              var arrayMineria = [];
+              // Array para palabras solo eliminado stopwords y simbolos extraños
+              var arrayTags = [];
+              // Obtenemos texto sin acentos y sin minusculas
+              var textoMineria = this.$eliminarAcentos(
+                miJson.actividades[x].nombre
+              ).toLowerCase();
+              // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
+              // se convierten en un solo espacio
+              textoMineria = this.$soloMinusculasYEspacios(textoMineria);
+              // Eliminamos stop word generales mas algunas que ponemos custom
 
-            arrayTags.sort();
-            // Aplicamos Stemming a cada palabra
-            for(var i in arrayTags){
-              arrayMineria[i]=natural.PorterStemmerEs.stem(arrayTags[i]);
+              arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
+              arrayTags = sw.removeStopwords(arrayTags, this.$misStopWords);
+
+              // Eliminamos duplicados
+              arrayTags = this.$eliminarDuplicados(arrayTags);
+
+              arrayTags.sort();
+              // Aplicamos Stemming a cada palabra
+              for (var i in arrayTags) {
+                arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
+              }
+
+              // Tratamos la descripcion elimiando CDATA y HTML
+              // Eliminamos CDATA
+              var miDescripcion = this.$CDATAToText(
+                miJson.actividades[x].descripcion
+              );
+
+              dato = {
+                nombre: miJson.actividades[x].nombre,
+                descripcion: miDescripcion,
+                tematica: miJson.actividades[x].tematica,
+                fechaInicio: miJson.actividades[x].fechaInicio,
+                fechaInicioMatriculacion:
+                  miJson.actividades[x].fechaInicioMatriculacion,
+                fechaFin: miJson.actividades[x].fechaFin,
+                fechaFinMatriculacion:
+                  miJson.actividades[x].fechaFinMatriculacion,
+                tagsGenerados: arrayTags,
+                bolsaDePalabras: arrayMineria,
+                favorito: false
+              };
+              // Lo metemos en un array
+              this.actividades.push(dato);
             }
-
-
-            // Tratamos la descripcion elimiando CDATA y HTML
-            // Eliminamos CDATA
-            var miDescripcion = miJson.actividades[x].descripcion
-              .replace("<![CDATA[", "")
-              .replace("]]>", "");
-            // Truco para eliminar el texto en formato HTML y tenerlo normal
-            var parser = new DOMParser();
-            var dom = parser.parseFromString(
-              "<!doctype html><body>" + miDescripcion,
-              "text/html"
-            );
-            miDescripcion = dom.body.textContent;
-
-
-            dato = {
-              nombre: miJson.actividades[x].nombre,
-              descripcion: miDescripcion,
-              tematica: miJson.actividades[x].tematica,
-              fechaInicio: miJson.actividades[x].fechaInicio,
-              fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
-              fechaFin: miJson.actividades[x].fechaFin,
-              fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
-              tagsGenerados: arrayTags,
-              bolsaDePalabras: arrayMineria,
-              favorito:false
-            };
-            // Lo metemos en un array
-            this.actividades.push(dato);
           }
           //Actualizamos favoritos
           this.cargarFavoritos("favoritos-online");
-          
+
           // Salvo en localstorage
-          localStorage.setItem("datos-online",JSON.stringify(this.actividades));
+          localStorage.setItem(
+            "datos-online",
+            JSON.stringify(this.actividades)
+          );
         })
         // En caso de error, mostramos el error para facilitar depuración
         .catch(error => {
@@ -154,7 +152,7 @@ export default {
           console.log(error);
         });
     },
-       // Función que carga del localStorage un texto en formato JSON
+    // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
     cargarFavoritos(idLocalStorage) {
       if (localStorage.getItem(idLocalStorage)) {
