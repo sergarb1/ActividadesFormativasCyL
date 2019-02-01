@@ -5,9 +5,6 @@
       <q-item-tile label class="q-ma-md">
         <strong>Gestión de suscripciones y notificaciones</strong>
       </q-item-tile>
-      <q-list class="q-ma-md">
-        <!-- Utilizamos un q-list para poner tres elementos collapsible -->
-        <q-collapsible group="somegroup" icon="face" label="Suscripciones" opened>
           <q-list link>
             <q-list-header>Marca las provincias a las que quieres suscribirte:</q-list-header>
             <!-- Utilizamos un list para meter etiquetas con checkbox y toggle button
@@ -60,8 +57,6 @@
               </q-item-side>
             </q-item>
           </q-list>
-        </q-collapsible>
-      </q-list>
     </div>
   </q-page>
 </template>

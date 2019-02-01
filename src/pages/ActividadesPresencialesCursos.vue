@@ -3,7 +3,10 @@
     <q-item-tile label class="q-mb-md">
       <strong>Cursos presenciales</strong>
     </q-item-tile>
-    <q-alert v-if="this.actividades.length==0" type="info">No hay actividades disponibles.</q-alert>
+    <q-alert v-if="this.actividades.length==0" icon="info" color="tertiary">
+      No hay actividades de este tipo disponibles.
+      Comprueba en el menú Suscripciones las provincias que deseas mostrar.
+    </q-alert>
 
     <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre+act.centro+act.fechaInicio">
       <q-card-title>
@@ -22,7 +25,7 @@
         </div>
       </q-card-title>
       <q-card-main>
-        <q-collapsible label="Ver información">
+        <q-collapsible label="Ver información" style="background-color: #e4b6d5">
           <div>
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="20px"/>&nbsp;
             <small>{{act.tematica}}</small>
@@ -30,17 +33,28 @@
             <br/>
             {{ act.descripcion }}
             <br/><br/>
-          <q-icon v-if="act.aviso" name="warning"/>&nbsp;&nbsp;
-          <small>
+            <p v-if="act.aviso">
+          <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
             <strong>{{ act.aviso }}</strong>
+            </p>
+            <p>
+          <q-icon name="event_note"/>&nbsp;&nbsp;
+          <small>
+            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
           </small>
-            <br/><br/>
-            <q-btn push rounded size="sm" color="secondary" icon-right="directions" label="Matricularse" @click="$router.push('/login')"/>
+        </p>
+        <p>
+          <q-icon name="event"/>&nbsp;&nbsp;
+          <small>
+            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+          </small>
+        </p>
+            <q-btn push rounded size="sm" color="secondary" icon-right="directions" label="Matricularse"/>
         </q-collapsible>
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
-      <q-card-actions align="between">
+      <!-- q-card-actions align="between">
         <div>
           <q-icon name="event_note"/>&nbsp;&nbsp;
           <small>
@@ -70,11 +84,27 @@
       </q-card-actions>
       <q-card-actions align="between">
         <div>
-          <!-- q-icon name="warning"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.aviso }}</strong>
-          </small -->
         </div>
+        <div>
+          <q-icon name="person"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
+          </small>
+        </div>
+      </q-card-actions-->
+      <q-card-actions align="between">
+        <div>
+          <q-icon name="trending_up"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.nivel }}</strong>
+          </small>
+        </div>
+        <div>
+          <q-icon name="watch_later"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.numeroHoras }} h</strong>
+          </small>
+        </div>        
         <div>
           <q-icon name="person"/>&nbsp;&nbsp;
           <small>
@@ -104,7 +134,6 @@ import axios from "axios";
 import sw from "stopword";
 // Importamos para procesamiento del lenguaje natural
 import natural from "natural";
-
 export default {
   name: "Index",
   // Definimos las variables en Vue
