@@ -403,9 +403,7 @@ export default {
           
           for(var k in this.datosCursos[i].bolsaDePalabras){
             for(var j in this.actividadesCursosPalabras){
-              console.log("Comparo "+this.actividadesCursosPalabras[j]+" con "+this.datosCursos[i].bolsaDePalabras[k]);
               if(this.actividadesCursosPalabras[j]==this.datosCursos[i].bolsaDePalabras[k]){
-                console.log("Entra");
                 this.datosCursos[i].puntosRecomendacion++;
                 break;
               } 
@@ -422,8 +420,21 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<3 && i<this.datosCursos.length;i++){
-        this.recomCursos.push(this.datosCursos[i]);
+         // MEtemos las recomendaciones
+      var alcanzados=0;
+      for (var i=0;alcanzados<3 && i<this.datosCursos.length;i++){
+        var encontrado=false;
+        for (var j in this.recomCursos){
+          // Ya recomendado uno con nombre igual
+          if(this.recomCursos[j].nombre==this.datosCursos[i].nombre){
+            encontrado=true;
+            break;
+          }
+        }
+        if(!encontrado){
+          this.recomCursos.push(this.datosCursos[i]);
+          alcanzados++;
+        }
       }
     },
     //Genera recomendaciones de charlas
@@ -443,7 +454,6 @@ export default {
           
           for(var k in this.datosCharlas[i].bolsaDePalabras){
             for(var j in this.actividadesCharlasPalabras){
-              console.log("Comparo "+this.actividadesCharlasPalabras[j]+" con "+this.datosCharlas[i].bolsaDePalabras[k]);
               if(this.actividadesCharlasPalabras[j]==this.datosCharlas[i].bolsaDePalabras[k]){
                 this.datosCharlas[i].puntosRecomendacion++;
                 break;
@@ -453,16 +463,21 @@ export default {
         }
       }
 
-      this.datosCharlas.sort( function(a,b){
-          if (a.puntosRecomendacion > b.puntosRecomendacion)
-            return -1;
-          if (a.puntosRecomendacion < b.puntosRecomendacion)
-            return 1;
-          return 0;
-      });
-
-      for (var i=0;i<3 && i<this.datosCharlas.length;i++){
-        this.recomCharlas.push(this.datosCharlas[i]);
+      // MEtemos las recomendaciones
+      var alcanzados=0;
+      for (var i=0;alcanzados<3 && i<this.datosCharlas.length;i++){
+        var encontrado=false;
+        for (var j in this.recomCharlas){
+          // Ya recomendado uno con nombre igual
+          if(this.recomCharlas[j].nombre==this.datosCharlas[i].nombre){
+            encontrado=true;
+            break;
+          }
+        }
+        if(!encontrado){
+          this.recomCharlas.push(this.datosCharlas[i]);
+          alcanzados++;
+        }
       }
     },    
     //Genera recomendaciones de talleres
@@ -499,8 +514,22 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<3 && i<this.datosTalleres.length;i++){
-        this.recomTalleres.push(this.datosTalleres[i]);
+      
+      // MEtemos las recomendaciones
+      var alcanzados=0;
+      for (var i=0;alcanzados<3 && i<this.datosTalleres.length;i++){
+        var encontrado=false;
+        for (var j in this.recomTalleres){
+          // Ya recomendado uno con nombre igual
+          if(this.recomTalleres[j].nombre==this.datosTalleres[i].nombre){
+            encontrado=true;
+            break;
+          }
+        }
+        if(!encontrado){
+          this.recomTalleres.push(this.datosTalleres[i]);
+          alcanzados++;
+        }
       }
     },
     //Genera recomendaciones de talleres
@@ -537,8 +566,21 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<3 && i<this.datosOnline.length;i++){
-        this.recomOnline.push(this.datosOnline[i]);
+      // MEtemos las recomendaciones
+      var alcanzados=0;
+      for (var i=0;alcanzados<3 && i<this.datosOnline.length;i++){
+        var encontrado=false;
+        for (var j in this.recomOnline){
+          // Ya recomendado uno con nombre igual
+          if(this.recomOnline[j].nombre==this.datosOnline[i].nombre){
+            encontrado=true;
+            break;
+          }
+        }
+        if(!encontrado){
+          this.recomOnline.push(this.datosOnline[i]);
+          alcanzados++;
+        }
       }
     },
         // Funcion que recibe un array y elimina duplicados
