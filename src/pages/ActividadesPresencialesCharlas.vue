@@ -11,7 +11,7 @@
           v-model="act.favorito"
           checked-icon="star"
           unchecked-icon="star_border"
-          @input="guardarFavoritos();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+          @input="$guardarFavoritos(actividades,'favoritos-charlas');   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
         />
         {{ act.nombre }}
         <span slot="subtitle">
@@ -173,7 +173,7 @@ export default {
             this.actividades.push(dato);
           }
           // actualizamos favoritos
-          this.cargarFavoritos();
+          this.cargarFavoritos("favoritos-charlas");
           // Salvo en localstorage
           localStorage.setItem("datos-charlas",JSON.stringify(this.actividades));
         })
@@ -184,26 +184,12 @@ export default {
         });
     },
 
-    // Función que guarda en localStorage un texto en formato JSON
+ 
+        // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
-    guardarFavoritos() {
-      var actividadesFavoritas = [];
-
-      for (var x in this.actividades) {
-        if (this.actividades[x].favorito == true) {
-          actividadesFavoritas.push(this.actividades[x]);
-        }
-      }
-      localStorage.setItem(
-        "favoritos-charlas",
-        JSON.stringify(actividadesFavoritas)
-      );
-    },
-    // Función que carga del localStorage un texto en formato JSON
-    // con los favoritos de cursos
-    cargarFavoritos() {
-      if (localStorage.getItem("favoritos-charlas")) {
-        var fav = JSON.parse(localStorage.getItem("favoritos-charlas"));
+    cargarFavoritos(idLocalStorage) {
+      if (localStorage.getItem(idLocalStorage)) {
+        var fav = JSON.parse(localStorage.getItem(idLocalStorage));
         // Rellenamos los favoritos
         for (var x in fav) {
           for (var y in this.actividades) {
