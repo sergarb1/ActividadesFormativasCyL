@@ -422,7 +422,7 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<5 && i<this.datosCursos.length;i++){
+      for (var i=0;i<3 && i<this.datosCursos.length;i++){
         this.recomCursos.push(this.datosCursos[i]);
       }
     },
@@ -461,7 +461,7 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<5 && i<this.datosCharlas.length;i++){
+      for (var i=0;i<3 && i<this.datosCharlas.length;i++){
         this.recomCharlas.push(this.datosCharlas[i]);
       }
     },    
@@ -499,7 +499,7 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<5 && i<this.datosTalleres.length;i++){
+      for (var i=0;i<3 && i<this.datosTalleres.length;i++){
         this.recomTalleres.push(this.datosTalleres[i]);
       }
     },
@@ -537,7 +537,7 @@ export default {
           return 0;
       });
 
-      for (var i=0;i<5 && i<this.datosOnline.length;i++){
+      for (var i=0;i<3 && i<this.datosOnline.length;i++){
         this.recomOnline.push(this.datosOnline[i]);
       }
     },
