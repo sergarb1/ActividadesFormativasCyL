@@ -1,3 +1,11 @@
+// Importamos axios para realizar el Ajax
+import axios from "axios";
+// Importamos para eliminar StopWords
+import sw from "stopword";
+// Importamos para procesamiento del lenguaje natural
+import natural from "natural";
+
+
 // Archivo de funciones que podemos reutilizar en diferentes archivos
 export default ({
   Vue
@@ -125,8 +133,235 @@ export default ({
     return dom.body.textContent;
   }
 
-  // Array con StopWords en castellano
 
-  Vue.prototype.$misStopWords = ["","0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "_", "a", "actualmente", "acuerdo", "adelante", "ademas", "además", "adrede", "afirmó", "agregó", "ahi", "ahora", "ahí", "al", "algo", "alguna", "algunas", "alguno", "algunos", "algún", "alli", "allí", "alrededor", "ambos", "ampleamos", "antano", "antaño", "ante", "anterior", "antes", "apenas", "aproximadamente", "aquel", "aquella", "aquellas", "aquello", "aquellos", "aqui", "aquél", "aquélla", "aquéllas", "aquéllos", "aquí", "arriba", "arribaabajo", "aseguró", "asi", "así", "atras", "aun", "aunque", "ayer", "añadió", "aún", "b", "bajo", "bastante", "bien", "breve", "buen", "buena", "buenas", "bueno", "buenos", "c", "cada", "casi", "cerca", "cierta", "ciertas", "cierto", "ciertos", "cinco", "claro", "comentó", "como", "con", "conmigo", "conocer", "conseguimos", "conseguir", "considera", "consideró", "consigo", "consigue", "consiguen", "consigues", "contigo", "contra", "cosas", "creo", "cual", "cuales", "cualquier", "cuando", "cuanta", "cuantas", "cuanto", "cuantos", "cuatro", "cuenta", "cuál", "cuáles", "cuándo", "cuánta", "cuántas", "cuánto", "cuántos", "cómo", "d", "da", "dado", "dan", "dar", "de", "debajo", "debe", "deben", "debido", "decir", "dejó", "del", "delante", "demasiado", "demás", "dentro", "deprisa", "desde", "despacio", "despues", "después", "detras", "detrás", "dia", "dias", "dice", "dicen", "dicho", "dieron", "diferente", "diferentes", "dijeron", "dijo", "dio", "donde", "dos", "durante", "día", "días", "dónde", "e", "ejemplo", "el", "ella", "ellas", "ello", "ellos", "embargo", "empleais", "emplean", "emplear", "empleas", "empleo", "en", "encima", "encuentra", "enfrente", "enseguida", "entonces", "entre", "era", "erais", "eramos", "eran", "eras", "eres", "es", "esa", "esas", "ese", "eso", "esos", "esta", "estaba", "estabais", "estaban", "estabas", "estad", "estada", "estadas", "estado", "estados", "estais", "estamos", "estan", "estando", "estar", "estaremos", "estará", "estarán", "estarás", "estaré", "estaréis", "estaría", "estaríais", "estaríamos", "estarían", "estarías", "estas", "este", "estemos", "esto", "estos", "estoy", "estuve", "estuviera", "estuvierais", "estuvieran", "estuvieras", "estuvieron", "estuviese", "estuvieseis", "estuviesen", "estuvieses", "estuvimos", "estuviste", "estuvisteis", "estuviéramos", "estuviésemos", "estuvo", "está", "estábamos", "estáis", "están", "estás", "esté", "estéis", "estén", "estés", "ex", "excepto", "existe", "existen", "explicó", "expresó", "f", "fin", "final", "fue", "fuera", "fuerais", "fueran", "fueras", "fueron", "fuese", "fueseis", "fuesen", "fueses", "fui", "fuimos", "fuiste", "fuisteis", "fuéramos", "fuésemos", "g", "general", "gran", "grandes", "gueno", "h", "ha", "haber", "habia", "habida", "habidas", "habido", "habidos", "habiendo", "habla", "hablan", "habremos", "habrá", "habrán", "habrás", "habré", "habréis", "habría", "habríais", "habríamos", "habrían", "habrías", "habéis", "había", "habíais", "habíamos", "habían", "habías", "hace", "haceis", "hacemos", "hacen", "hacer", "hacerlo", "haces", "hacia", "haciendo", "hago", "han", "has", "hasta", "hay", "haya", "hayamos", "hayan", "hayas", "hayáis", "he", "hecho", "hemos", "hicieron", "hizo", "horas", "hoy", "hube", "hubiera", "hubierais", "hubieran", "hubieras", "hubieron", "hubiese", "hubieseis", "hubiesen", "hubieses", "hubimos", "hubiste", "hubisteis", "hubiéramos", "hubiésemos", "hubo", "i", "igual", "incluso", "indicó", "informo", "informó", "intenta", "intentais", "intentamos", "intentan", "intentar", "intentas", "intento", "ir", "j", "junto", "k", "l", "la", "lado", "largo", "las", "le", "lejos", "les", "llegó", "lleva", "llevar", "lo", "los", "luego", "lugar", "m", "mal", "manera", "manifestó", "mas", "mayor", "me", "mediante", "medio", "mejor", "mencionó", "menos", "menudo", "mi", "mia", "mias", "mientras", "mio", "mios", "mis", "misma", "mismas", "mismo", "mismos", "modo", "momento", "mucha", "muchas", "mucho", "muchos", "muy", "más", "mí", "mía", "mías", "mío", "míos", "n", "nada", "nadie", "ni", "ninguna", "ningunas", "ninguno", "ningunos", "ningún", "no", "nos", "nosotras", "nosotros", "nuestra", "nuestras", "nuestro", "nuestros", "nueva", "nuevas", "nuevo", "nuevos", "nunca", "o", "ocho", "os", "otra", "otras", "otro", "otros", "p", "pais", "para", "parece", "parte", "partir", "pasada", "pasado", "paìs", "peor", "pero", "pesar", "poca", "pocas", "poco", "pocos", "podeis", "podemos", "poder", "podria", "podriais", "podriamos", "podrian", "podrias", "podrá", "podrán", "podría", "podrían", "poner", "por", "por qué", "porque", "posible", "primer", "primera", "primero", "primeros", "principalmente", "pronto", "propia", "propias", "propio", "propios", "proximo", "próximo", "próximos", "pudo", "pueda", "puede", "pueden", "puedo", "pues", "q", "qeu", "que", "quedó", "queremos", "quien", "quienes", "quiere", "quiza", "quizas", "quizá", "quizás", "quién", "quiénes", "qué", "r", "raras", "realizado", "realizar", "realizó", "repente", "respecto", "s", "sabe", "sabeis", "sabemos", "saben", "saber", "sabes", "sal", "salvo", "se", "sea", "seamos", "sean", "seas", "segun", "segunda", "segundo", "según", "seis", "ser", "sera", "seremos", "será", "serán", "serás", "seré", "seréis", "sería", "seríais", "seríamos", "serían", "serías", "seáis", "señaló", "si", "sido", "siempre", "siendo", "siete", "sigue", "siguiente", "sin", "sino", "sobre", "sois", "sola", "solamente", "solas", "solo", "solos", "somos", "son", "soy", "soyos", "su", "supuesto", "sus", "suya", "suyas", "suyo", "suyos", "sé", "sí", "sólo", "t", "tal", "tambien", "también", "tampoco", "tan", "tanto", "tarde", "te", "temprano", "tendremos", "tendrá", "tendrán", "tendrás", "tendré", "tendréis", "tendría", "tendríais", "tendríamos", "tendrían", "tendrías", "tened", "teneis", "tenemos", "tener", "tenga", "tengamos", "tengan", "tengas", "tengo", "tengáis", "tenida", "tenidas", "tenido", "tenidos", "teniendo", "tenéis", "tenía", "teníais", "teníamos", "tenían", "tenías", "tercera", "ti", "tiempo", "tiene", "tienen", "tienes", "toda", "todas", "todavia", "todavía", "todo", "todos", "total", "trabaja", "trabajais", "trabajamos", "trabajan", "trabajar", "trabajas", "trabajo", "tras", "trata", "través", "tres", "tu", "tus", "tuve", "tuviera", "tuvierais", "tuvieran", "tuvieras", "tuvieron", "tuviese", "tuvieseis", "tuviesen", "tuvieses", "tuvimos", "tuviste", "tuvisteis", "tuviéramos", "tuviésemos", "tuvo", "tuya", "tuyas", "tuyo", "tuyos", "tú", "u", "ultimo", "un", "una", "unas", "uno", "unos", "usa", "usais", "usamos", "usan", "usar", "usas", "uso", "usted", "ustedes", "v", "va", "vais", "valor", "vamos", "van", "varias", "varios", "vaya", "veces", "ver", "verdad", "verdadera", "verdadero", "vez", "vosotras", "vosotros", "voy", "vuestra", "vuestras", "vuestro", "vuestros", "w", "x", "y", "ya", "yo", "z", "él", "éramos", "ésa", "ésas", "ése", "ésos", "ésta", "éstas", "éste", "éstos", "última", "últimas", "último", "últimos"];
+  // Variable con la ultima actualizacion
+  Vue.prototype.$ultimaActualizacion = undefined;
+
+  // Variable que comprueba si hace falta actualizar
+  Vue.prototype.$hayQueActualizar = function () {
+
+    // Si esta en localStorage, la cogemos de ahi
+    if (localStorage.getItem("ultimaActualizacion"))
+      this.$ultimaActualizacion = new Date(JSON.parse(localStorage.getItem("ultimaActualizacion")));
+    // Fecha de ultima actualizacion
+    var date1 = this.$ultimaActualizacion;
+    // Si no se ha actualizado nunca
+    if (date1 == undefined) {
+      return true;
+    }
+    // Fecha actual;
+    var date2 = new Date();
+    // Calculamos la diferencia entre horas
+    var difHoras = Math.abs(date1 - date2) / (60 * 60 * 1000);
+
+    // Caso que la diferencia de horas sea mayor que 2
+    if (difHoras > 2) {
+      return true;
+    }
+    // Caso que la diferencia de horas sea mayor, devolver falso 
+    return false;
+  }
+
+
+  Vue.prototype.$actualizarDatos = function () {
+    var provTmp;
+    var actividades = [];
+    var urlTipo=[
+      { tipo:"datos-cursos",
+        url:"https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso",
+      },
+      { tipo:"datos-talleres",
+        url:"https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=taller",
+      },
+      { tipo:"datos-charlas",
+        url:"https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=charla",
+      }
+    ];
+
+
+    for(var i in urlTipo){
+
+    
+      if (localStorage.getItem("provincias")) {
+        provTmp = JSON.parse(localStorage.getItem("provincias"));
+      } else {
+        provTmp = this.$provincias;
+      }
+      console.log("Actualizo");
+      for (var x in provTmp) {
+        if (provTmp[x].marcado) {
+          // Pasamos el centro sin acentos y en minusculas
+          console.log("Provincia " + provTmp[x].nombre);
+          var centroTMP = this.$eliminarAcentos(
+            provTmp[x].nombre
+          ).toLowerCase();
+          console.log("Pido " + centroTMP);
+          this.$getEstadoActividades(centroTMP, urlTipo[i].url, urlTipo[i].tipo);
+        }
+      }
+
+    }
+  }
+
+
+
+
+  // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
+  Vue.prototype.$getEstadoActividades = function (centro, url, tipo) {
+    console.log(centro + " "+url+" "+tipo)
+    // Para que nos devuelvan los datos en JSON
+    axios.defaults.headers = {
+      Accept: "application/json"
+    };
+    // Definimos el comportamiento de Axios
+    axios
+      .get(url + "&centro=" + centro)
+      .then(response => {
+        var actividades = [];
+
+        // Si, para coger este JSON debo hacer esta pirula
+        var miJson = JSON.parse(JSON.stringify(response.data));
+        // Si hay actividades...
+        if (typeof miJson.actividades !== "undefined") {
+          // Pasamos el contenido al array "actividades"
+          for (var x in miJson.actividades) {
+            //Formamos el dato
+            var dato;
+            // Array de palabras tras eliminar stopwords y realizar stemming
+            var arrayMineria = [];
+            // Array para palabras solo eliminado stopwords y simbolos extraños
+            var arrayTags = [];
+            // Obtenemos texto sin acentos y sin minusculas
+            var textoMineria = this.$eliminarAcentos(
+              miJson.actividades[x].nombre
+            ).toLowerCase();
+            // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
+            // se convierten en un solo espacio
+            textoMineria = this.$soloMinusculasYEspacios(textoMineria);
+
+            // Eliminamos stop word generales mas algunas que ponemos custom
+            arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
+            arrayTags = sw.removeStopwords(arrayTags, this.$misStopWords);
+
+            // Eliminamos duplicados
+            arrayTags = this.$eliminarDuplicados(arrayTags);
+            arrayTags.sort();
+            // Aplicamos Stemming a cada palabra
+            for (var i in arrayTags) {
+              arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
+            }
+
+            // Tratamos la descripcion elimiando CDATA y HTML
+            // Eliminamos CDATA
+
+            var miDescripcion = this.$CDATAToText(
+              miJson.actividades[x].descripcion
+            );
+
+            var miAviso = this.$CDATAToText(
+              miJson.actividades[x].aviso
+            );
+            // Construimos el dato
+            dato = {
+              nombre: miJson.actividades[x].nombre,
+              centro: miJson.actividades[x].centro,
+              descripcion: miDescripcion,
+              tematica: miJson.actividades[x].tematica,
+              nivel: miJson.actividades[x].nivel,
+              numeroHoras: miJson.actividades[x].numeroHoras,
+              fechaInicio: miJson.actividades[x].fechaInicio,
+              fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
+              fechaFin: miJson.actividades[x].fechaFin,
+              fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
+              numeroPlazas: miJson.actividades[x].numeroPlazas,
+              numeroSolicitudes: miJson.actividades[x].numeroSolicitudes,
+              aviso: miAviso,
+              tagsGenerados: arrayTags,
+              bolsaDePalabras: arrayMineria,
+              favorito: false
+            };
+            // Lo metemos en un array
+            actividades.push(dato);
+          }
+        }
+
+        // Salvo en localstorage
+        localStorage.setItem(
+          tipo,
+          JSON.stringify(actividades)
+        );
+      })
+      // En caso de error, mostramos el error para facilitar depuración
+      .catch(error => {
+        console.log("-----error-------");
+        console.log(error);
+      });
+  }
+
+
+  // Opciones filtro
+  Vue.prototype.$filtro={
+    horasMin: undefined,
+    horasMax: undefined,
+    fechaMin: undefined,
+    fechaMax: undefined,
+    provincias: [],
+    tematicas:[],
+    niveles:[],
+    busqueda: []
+  }
+
+  //Array con las provincias
+  Vue.prototype.$provincias = [{
+        nombre: "Ávila",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Burgos",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "León",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Palencia",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Salamanca",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Segovia",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Soria",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Valladolid",
+        marcado: false,
+        notificado: false
+      },
+      {
+        nombre: "Zamora",
+        marcado: false,
+        notificado: false
+      }
+    ],
+
+
+    // Array con StopWords en castellano
+
+    Vue.prototype.$misStopWords = ["", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "_", "a", "actualmente", "acuerdo", "adelante", "ademas", "además", "adrede", "afirmó", "agregó", "ahi", "ahora", "ahí", "al", "algo", "alguna", "algunas", "alguno", "algunos", "algún", "alli", "allí", "alrededor", "ambos", "ampleamos", "antano", "antaño", "ante", "anterior", "antes", "apenas", "aproximadamente", "aquel", "aquella", "aquellas", "aquello", "aquellos", "aqui", "aquél", "aquélla", "aquéllas", "aquéllos", "aquí", "arriba", "arribaabajo", "aseguró", "asi", "así", "atras", "aun", "aunque", "ayer", "añadió", "aún", "b", "bajo", "bastante", "bien", "breve", "buen", "buena", "buenas", "bueno", "buenos", "c", "cada", "casi", "cerca", "cierta", "ciertas", "cierto", "ciertos", "cinco", "claro", "comentó", "como", "con", "conmigo", "conocer", "conseguimos", "conseguir", "considera", "consideró", "consigo", "consigue", "consiguen", "consigues", "contigo", "contra", "cosas", "creo", "cual", "cuales", "cualquier", "cuando", "cuanta", "cuantas", "cuanto", "cuantos", "cuatro", "cuenta", "cuál", "cuáles", "cuándo", "cuánta", "cuántas", "cuánto", "cuántos", "cómo", "d", "da", "dado", "dan", "dar", "de", "debajo", "debe", "deben", "debido", "decir", "dejó", "del", "delante", "demasiado", "demás", "dentro", "deprisa", "desde", "despacio", "despues", "después", "detras", "detrás", "dia", "dias", "dice", "dicen", "dicho", "dieron", "diferente", "diferentes", "dijeron", "dijo", "dio", "donde", "dos", "durante", "día", "días", "dónde", "e", "ejemplo", "el", "ella", "ellas", "ello", "ellos", "embargo", "empleais", "emplean", "emplear", "empleas", "empleo", "en", "encima", "encuentra", "enfrente", "enseguida", "entonces", "entre", "era", "erais", "eramos", "eran", "eras", "eres", "es", "esa", "esas", "ese", "eso", "esos", "esta", "estaba", "estabais", "estaban", "estabas", "estad", "estada", "estadas", "estado", "estados", "estais", "estamos", "estan", "estando", "estar", "estaremos", "estará", "estarán", "estarás", "estaré", "estaréis", "estaría", "estaríais", "estaríamos", "estarían", "estarías", "estas", "este", "estemos", "esto", "estos", "estoy", "estuve", "estuviera", "estuvierais", "estuvieran", "estuvieras", "estuvieron", "estuviese", "estuvieseis", "estuviesen", "estuvieses", "estuvimos", "estuviste", "estuvisteis", "estuviéramos", "estuviésemos", "estuvo", "está", "estábamos", "estáis", "están", "estás", "esté", "estéis", "estén", "estés", "ex", "excepto", "existe", "existen", "explicó", "expresó", "f", "fin", "final", "fue", "fuera", "fuerais", "fueran", "fueras", "fueron", "fuese", "fueseis", "fuesen", "fueses", "fui", "fuimos", "fuiste", "fuisteis", "fuéramos", "fuésemos", "g", "general", "gran", "grandes", "gueno", "h", "ha", "haber", "habia", "habida", "habidas", "habido", "habidos", "habiendo", "habla", "hablan", "habremos", "habrá", "habrán", "habrás", "habré", "habréis", "habría", "habríais", "habríamos", "habrían", "habrías", "habéis", "había", "habíais", "habíamos", "habían", "habías", "hace", "haceis", "hacemos", "hacen", "hacer", "hacerlo", "haces", "hacia", "haciendo", "hago", "han", "has", "hasta", "hay", "haya", "hayamos", "hayan", "hayas", "hayáis", "he", "hecho", "hemos", "hicieron", "hizo", "horas", "hoy", "hube", "hubiera", "hubierais", "hubieran", "hubieras", "hubieron", "hubiese", "hubieseis", "hubiesen", "hubieses", "hubimos", "hubiste", "hubisteis", "hubiéramos", "hubiésemos", "hubo", "i", "igual", "incluso", "indicó", "informo", "informó", "intenta", "intentais", "intentamos", "intentan", "intentar", "intentas", "intento", "ir", "j", "junto", "k", "l", "la", "lado", "largo", "las", "le", "lejos", "les", "llegó", "lleva", "llevar", "lo", "los", "luego", "lugar", "m", "mal", "manera", "manifestó", "mas", "mayor", "me", "mediante", "medio", "mejor", "mencionó", "menos", "menudo", "mi", "mia", "mias", "mientras", "mio", "mios", "mis", "misma", "mismas", "mismo", "mismos", "modo", "momento", "mucha", "muchas", "mucho", "muchos", "muy", "más", "mí", "mía", "mías", "mío", "míos", "n", "nada", "nadie", "ni", "ninguna", "ningunas", "ninguno", "ningunos", "ningún", "no", "nos", "nosotras", "nosotros", "nuestra", "nuestras", "nuestro", "nuestros", "nueva", "nuevas", "nuevo", "nuevos", "nunca", "o", "ocho", "os", "otra", "otras", "otro", "otros", "p", "pais", "para", "parece", "parte", "partir", "pasada", "pasado", "paìs", "peor", "pero", "pesar", "poca", "pocas", "poco", "pocos", "podeis", "podemos", "poder", "podria", "podriais", "podriamos", "podrian", "podrias", "podrá", "podrán", "podría", "podrían", "poner", "por", "por qué", "porque", "posible", "primer", "primera", "primero", "primeros", "principalmente", "pronto", "propia", "propias", "propio", "propios", "proximo", "próximo", "próximos", "pudo", "pueda", "puede", "pueden", "puedo", "pues", "q", "qeu", "que", "quedó", "queremos", "quien", "quienes", "quiere", "quiza", "quizas", "quizá", "quizás", "quién", "quiénes", "qué", "r", "raras", "realizado", "realizar", "realizó", "repente", "respecto", "s", "sabe", "sabeis", "sabemos", "saben", "saber", "sabes", "sal", "salvo", "se", "sea", "seamos", "sean", "seas", "segun", "segunda", "segundo", "según", "seis", "ser", "sera", "seremos", "será", "serán", "serás", "seré", "seréis", "sería", "seríais", "seríamos", "serían", "serías", "seáis", "señaló", "si", "sido", "siempre", "siendo", "siete", "sigue", "siguiente", "sin", "sino", "sobre", "sois", "sola", "solamente", "solas", "solo", "solos", "somos", "son", "soy", "soyos", "su", "supuesto", "sus", "suya", "suyas", "suyo", "suyos", "sé", "sí", "sólo", "t", "tal", "tambien", "también", "tampoco", "tan", "tanto", "tarde", "te", "temprano", "tendremos", "tendrá", "tendrán", "tendrás", "tendré", "tendréis", "tendría", "tendríais", "tendríamos", "tendrían", "tendrías", "tened", "teneis", "tenemos", "tener", "tenga", "tengamos", "tengan", "tengas", "tengo", "tengáis", "tenida", "tenidas", "tenido", "tenidos", "teniendo", "tenéis", "tenía", "teníais", "teníamos", "tenían", "tenías", "tercera", "ti", "tiempo", "tiene", "tienen", "tienes", "toda", "todas", "todavia", "todavía", "todo", "todos", "total", "trabaja", "trabajais", "trabajamos", "trabajan", "trabajar", "trabajas", "trabajo", "tras", "trata", "través", "tres", "tu", "tus", "tuve", "tuviera", "tuvierais", "tuvieran", "tuvieras", "tuvieron", "tuviese", "tuvieseis", "tuviesen", "tuvieses", "tuvimos", "tuviste", "tuvisteis", "tuviéramos", "tuviésemos", "tuvo", "tuya", "tuyas", "tuyo", "tuyos", "tú", "u", "ultimo", "un", "una", "unas", "uno", "unos", "usa", "usais", "usamos", "usan", "usar", "usas", "uso", "usted", "ustedes", "v", "va", "vais", "valor", "vamos", "van", "varias", "varios", "vaya", "veces", "ver", "verdad", "verdadera", "verdadero", "vez", "vosotras", "vosotros", "voy", "vuestra", "vuestras", "vuestro", "vuestros", "w", "x", "y", "ya", "yo", "z", "él", "éramos", "ésa", "ésas", "ése", "ésos", "ésta", "éstas", "éste", "éstos", "última", "últimas", "último", "últimos"]
 
 }

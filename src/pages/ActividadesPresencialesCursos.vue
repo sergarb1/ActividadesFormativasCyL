@@ -17,7 +17,7 @@
             checked-icon="favorite"
             unchecked-icon="favorite_border"
             @input="$guardarFavoritos(actividades,'favoritos-cursos');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
-          /> 
+          />
         </div>
         <div slot="subtitle">
           <q-icon name="room" size="16px"/>&nbsp;
@@ -30,26 +30,35 @@
             <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="20px"/>&nbsp;
             <small>{{act.tematica}}</small>
           </div>
-            <br/>
-            {{ act.descripcion }}
-            <br/><br/>
-            <p v-if="act.aviso">
-          <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
+          <br>
+          {{ act.descripcion }}
+          <br>
+          <br>
+          <p v-if="act.aviso">
+            <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
             <strong>{{ act.aviso }}</strong>
-            </p>
-            <p>
-          <q-icon name="event_note"/>&nbsp;&nbsp;
-          <small>
-            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-          </small>
-        </p>
-        <p>
-          <q-icon name="event"/>&nbsp;&nbsp;
-          <small>
-            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-          </small>
-        </p>
-            <q-btn push rounded size="sm" color="secondary" icon-right="directions" label="Matricularse"/>
+          </p>
+          <p>
+            <q-icon name="event_note"/>&nbsp;&nbsp;
+            <small>
+              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
+            </small>
+          </p>
+          <p>
+            <q-icon name="event"/>&nbsp;&nbsp;
+            <small>
+              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+            </small>
+          </p>
+            <q-btn
+              push
+              rounded
+              size="sm"
+              color="secondary"
+              icon-right="directions"
+              label="Matricularse"
+              @click="abrirURL('https://www.cyldigital.es/user/login')"
+            />
         </q-collapsible>
         <q-item-main/>
       </q-card-main>
@@ -104,11 +113,11 @@
           <small>
             <strong>{{ act.numeroHoras }} h</strong>
           </small>
-        </div>        
+        </div>
         <div>
           <q-icon name="person"/>&nbsp;&nbsp;
           <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
+            <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
           </small>
         </div>
       </q-card-actions>
@@ -128,143 +137,53 @@
 
 <!-- Aqui script, donde irá el Javascript (métodos, funciones, etc) -->
 <script>
-// Importamos axios para realizar el Ajax
-import axios from "axios";
-// Importamos para eliminar StopWords
-import sw from "stopword";
-// Importamos para procesamiento del lenguaje natural
-import natural from "natural";
+import { openURL } from 'quasar';
+
+
+
 export default {
   name: "Index",
   // Definimos las variables en Vue
   data() {
     return {
-      // URL para obtener datos JSON de ValenBisi
-      endpoint:
-        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso",
-      // Array con información de cada uno de las estacione
+        // Array con información de cada uno de las estacione
       actividades: []
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
+    // Comprobar si hay que actualizar y si se debe hacer, se hace
+    if (this.$hayQueActualizar()) {
+      this.$actualizarDatos();
+      //Esperar 3s a que se actualice
+      var start = new Date().getTime();
+      var end = start;
+      while (end < start + 3000) {
+        end = new Date().getTime();
+      }
+      // Fin del esperar
+
+      // Ponemos fecha de actualizacion y la guardamos localStorage
+      this.$ultimaActualizacion=new Date();
+      localStorage.setItem("ultimaActualizacion",JSON.stringify(this.$ultimaActualizacion.toISOString()));
+    }
     // Obtenemos la informacion de los centros marcados
     this.obtieneInformacionCentrosMarcados();
+    //this.cargarFavoritos("favoritos-cursos");
   },
   // Metodos accesibles desde Vue
   methods: {
+
+    abrirURL(url){
+       openURL(url);
+    },
+
     // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
     obtieneInformacionCentrosMarcados() {
-      var provTmp;
-      if (localStorage.getItem("provincias")) {
-        // Vaciamos las actividades
-        this.actividades = [];
-        console.log(localStorage.getItem("provincias"));
-        provTmp = JSON.parse(localStorage.getItem("provincias"));
-        var x;
-        for (x in provTmp) {
-          if (provTmp[x].marcado) {
-            // Pasamos el centro sin acentos y en minusculas
-            var centroTMP = this.$eliminarAcentos(
-              provTmp[x].nombre
-            ).toLowerCase();
-
-            this.getEstadoActividades(centroTMP);
-          }
-        }
+      if(localStorage.getItem("datos-cursos")){
+        this.actividades=JSON.parse(localStorage.getItem("datos-cursos"));
       }
-    },
-    // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
-    getEstadoActividades(centro) {
-      // Para que nos devuelvan los datos en JSON
-      axios.defaults.headers = {
-        Accept: "application/json"
-      };
-      // Definimos el comportamiento de Axios
-      axios
-        .get(this.endpoint + "&centro=" + centro)
-        .then(response => {
-          // Si, para coger este JSON debo hacer esta pirula
-          console.log(response.data);
-          var miJson = JSON.parse(JSON.stringify(response.data));
-          // Si hay actividades...
-          if (typeof miJson.actividades !== "undefined") {
-            // Pasamos el contenido al array "actividades"
-            for (var x in miJson.actividades) {
-              //Formamos el dato
-              var dato;
-              // Array de palabras tras eliminar stopwords y realizar stemming
-              var arrayMineria = [];
-              // Array para palabras solo eliminado stopwords y simbolos extraños
-              var arrayTags = [];
-              // Obtenemos texto sin acentos y sin minusculas
-              var textoMineria = this.$eliminarAcentos(
-                miJson.actividades[x].nombre
-              ).toLowerCase();
-              // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
-              // se convierten en un solo espacio
-              textoMineria = this.$soloMinusculasYEspacios(textoMineria);
-
-              // Eliminamos stop word generales mas algunas que ponemos custom
-
-              arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
-              arrayTags = sw.removeStopwords(arrayTags, this.$misStopWords);
-
-              // Eliminamos duplicados
-              arrayTags = this.$eliminarDuplicados(arrayTags);
-              arrayTags.sort();
-              // Aplicamos Stemming a cada palabra
-              for (var i in arrayTags) {
-                arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
-              }
-
-              // Tratamos la descripcion elimiando CDATA y HTML
-              // Eliminamos CDATA
-
-              var miDescripcion = this.$CDATAToText(
-                miJson.actividades[x].descripcion
-              );
-
-              var miAviso = this.$CDATAToText(
-                miJson.actividades[x].aviso
-              );
-              // Construimos el dato
-              dato = {
-                nombre: miJson.actividades[x].nombre,
-                centro: miJson.actividades[x].centro,
-                descripcion: miDescripcion,
-                tematica: miJson.actividades[x].tematica,
-                nivel: miJson.actividades[x].nivel,
-                numeroHoras: miJson.actividades[x].numeroHoras,
-                fechaInicio: miJson.actividades[x].fechaInicio,
-                fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
-                fechaFin: miJson.actividades[x].fechaFin,
-                fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
-                numeroPlazas: miJson.actividades[x].numeroPlazas,
-                numeroSolicitudes: miJson.actividades[x].numeroSolicitudes,
-                aviso: miAviso,
-                tagsGenerados: arrayTags,
-                bolsaDePalabras: arrayMineria,
-                favorito: false
-              };
-              // Lo metemos en un array
-              this.actividades.push(dato);
-            }
-          }
-          // actualizamos favoritos
-          this.cargarFavoritos("favoritos-cursos");
-
-          // Salvo en localstorage
-          localStorage.setItem(
-            "datos-cursos",
-            JSON.stringify(this.actividades)
-          );
-        })
-        // En caso de error, mostramos el error para facilitar depuración
-        .catch(error => {
-          console.log("-----error-------");
-          console.log(error);
-        });
+      
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
