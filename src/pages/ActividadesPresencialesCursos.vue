@@ -113,11 +113,11 @@
         </div>
       </q-card-actions>
       <q-card-separator/>
-      <q-card-actions align="between">
+      <!-- q-card-actions align="between">
         <div>
           <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
         </div>
-      </q-card-actions>
+      </q-card-actions-->
     </q-card>
   </q-page>
 </template>

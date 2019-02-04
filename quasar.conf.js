@@ -65,7 +65,10 @@ module.exports = function (ctx) {
         'QCheckbox',
         'QToggle',
         'QAlert',
-        'QChip'
+        'QChip',
+        'QInput',
+        'QSelect',
+        'QDatetime'
 
       ],
       directives: [

@@ -13,7 +13,8 @@ const routes = [
       { path: '/acercade', component: () => import('pages/AcercaDe.vue') },
       { path: '/favoritos', component: () => import('pages/Favoritos.vue') },
       { path: '/recomendaciones', component: () => import('pages/Recomendaciones.vue') },
-      { path: '/login', component: () => import('pages/Login.vue') }
+      { path: '/login', component: () => import('pages/Login.vue') },
+      { path: '/buscador', component: () => import('pages/Buscador.vue') }
     ]
   }
 ]

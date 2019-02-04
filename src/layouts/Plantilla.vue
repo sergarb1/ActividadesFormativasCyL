@@ -10,6 +10,7 @@
             <img src="../assets/sigecyl.png" style="height:30px"/>
           Castilla y León Digital
           <!--div slot="subtitle">Para todos los públicos</div-->
+          <q-btn dense flat size="sm" icon="favorite" label="Favoritos" to="/favoritos"  class="float-right"/>
         </q-toolbar-title>
       </q-toolbar>
       <q-tabs color="primary">
@@ -76,9 +77,9 @@
           <q-item-side icon="edit"/>
           <q-item-main label="Suscripciones" sublabel="Selección de cursos por provincia"/>
         </q-item>
-        <q-item to="/actonline">
-          <q-item-side icon="help_outline"/>
-          <q-item-main label="Inicio" sublabel="De nuestra aplicacion"/>
+        <q-item to="/buscador">
+          <q-item-side icon="search"/>
+          <q-item-main label="Buscador" sublabel="Filtra eventos"/>
         </q-item>
         <q-item to="/acercade">
           <q-item-side icon="help_outline"/>
