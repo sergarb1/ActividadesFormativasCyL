@@ -318,8 +318,8 @@ export default {
           this.datosTalleres.push(tmp[x]);
         }
       }
-      if (localStorage.getItem("datos-online")) {
-        var tmp = JSON.parse(localStorage.getItem("datos-online"));
+      if (localStorage.getItem("presenciales-online")) {
+        var tmp = JSON.parse(localStorage.getItem("presenciales-online"));
         for (var x in tmp) {
           this.datosOnline.push(tmp[x]);
         }

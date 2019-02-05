@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex-top q-ma-lg">
     <!-- Collapsible Cursos -->
-    <q-collapsible icon="school" label="Cursos">
+    <q-collapsible icon="school" label="Act. Presenciales">
       <q-item-tile label class="q-mb-md">
         <strong>Favoritos</strong>
       </q-item-tile>
@@ -17,7 +17,7 @@
             v-model="act.favorito"
             checked-icon="favorite"
             unchecked-icon="favorite_border"
-            @input="$guardarFavoritos(actividadesCursos,'favoritos-cursos'); this.getEstadoActividades();  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+            @input="$guardarFavoritos(actividadesCursos,'favoritos-presenciales'); this.getEstadoActividades();  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
           />
           {{ act.nombre }}
           <span slot="subtitle">
@@ -66,138 +66,6 @@
       </q-card>
     </q-collapsible>
     <!-- fin collapsible cursos -->
-    <!-- Collapsible charlas -->
-    <q-collapsible icon="mode_comment" label="Charlas">
-      <q-item-tile label class="q-mb-md">
-        <strong>Favoritos</strong>
-      </q-item-tile>
-      <q-alert v-if="this.actividadesCharlas.length==0" type="info">No hay actividades disponibles.</q-alert>
-
-      <q-card
-        class="q-mb-md"
-        v-for="act in actividadesCharlas"
-        :key="act.nombre+act.centro+act.fechaInicio"
-      >
-        <q-card-title>
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="$guardarFavoritos(actividadesCharlas,'favoritos-charlas');this.getEstadoActividades();   if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-          />
-          {{ act.nombre }}
-          <span slot="subtitle">
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </span>
-        </q-card-title>
-        <q-card-main>
-          {{ act.descripcion }}
-          <q-item-main/>
-        </q-card-main>
-        <q-card-separator/>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event_note"/>&nbsp;&nbsp;
-            <small>
-              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nivel: {{ act.nivel }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nº horas: {{ act.numeroHoras }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
-          </div>
-        </q-card-actions>
-      </q-card>
-    </q-collapsible>
-    <!-- fin collapsible charlas -->
-    <!-- Collapsible talleres -->
-    <q-collapsible icon="extension" label="Talleres">
-      <q-item-tile label class="q-mb-md">
-        <strong>Favoritos</strong>
-      </q-item-tile>
-      <q-alert v-if="this.actividadesTalleres.length==0" type="info">No hay actividades disponibles.</q-alert>
-
-      <q-card
-        class="q-mb-md"
-        v-for="act in actividadesTalleres"
-        :key="act.nombre+act.centro+act.fechaInicio"
-      >
-        <q-card-title>
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="star"
-            unchecked-icon="star_border"
-            @input="$guardarFavoritos(actividadesTalleres,'favoritos-talleres'); this.getEstadoActividades();  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
-          />
-          {{ act.nombre }}
-          <span slot="subtitle">
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </span>
-        </q-card-title>
-        <q-card-main>
-          {{ act.descripcion }}
-          <q-item-main/>
-        </q-card-main>
-        <q-card-separator/>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event_note"/>&nbsp;&nbsp;
-            <small>
-              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nivel: {{ act.nivel }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nº horas: {{ act.numeroHoras }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
-          </div>
-        </q-card-actions>
-      </q-card>
-    </q-collapsible>
-    <!-- fin collapsible talleres -->
     <!-- Collapsible online -->
     <q-collapsible icon="cloud" label="Online">
       <q-item-tile label class="q-mb-md">
@@ -309,24 +177,13 @@ export default {
       this.actividadesTalleres = [];
       this.actividadesOnline = [];
 
-      if (localStorage.getItem("favoritos-cursos")) {
-        var tmp = JSON.parse(localStorage.getItem("favoritos-cursos"));
+      if (localStorage.getItem("favoritos-presenciales")) {
+        var tmp = JSON.parse(localStorage.getItem("favoritos-presenciales"));
         for (var x in tmp) {
           this.actividadesCursos.push(tmp[x]);
         }
       }
-      if (localStorage.getItem("favoritos-charlas")) {
-        var tmp = JSON.parse(localStorage.getItem("favoritos-charlas"));
-        for (var x in tmp) {
-          this.actividadesCharlas.push(tmp[x]);
-        }
-      }
-      if (localStorage.getItem("favoritos-talleres")) {
-        var tmp = JSON.parse(localStorage.getItem("favoritos-talleres"));
-        for (var x in tmp) {
-          this.actividadesTalleres.push(tmp[x]);
-        }
-      }
+
       if (localStorage.getItem("favoritos-online")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-online"));
         for (var x in tmp) {

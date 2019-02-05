@@ -16,7 +16,7 @@
             v-model="act.favorito"
             checked-icon="favorite"
             unchecked-icon="favorite_border"
-            @input="$guardarFavoritos(actividades,'favoritos-cursos');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
+            @input="$guardarFavoritos(actividades,'favoritos-online');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
           />
         </div>
         <div slot="subtitle">
@@ -52,18 +52,18 @@
           <p v-if="act.horaInicioWebinar">
             <q-icon name="video_call"/>&nbsp;&nbsp;
             <small>
-              <strong>Horario webinar: {{ act.horaInicioWebinar }}h. - {{ act.horaFinWebinar }}h. </strong>
+              <strong>Horario webinar: {{ act.horaInicioWebinar }}h. - {{ act.horaFinWebinar }}h.</strong>
             </small>
           </p>
-            <q-btn
-              push
-              rounded
-              size="sm"
-              color="secondary"
-              icon-right="directions"
-              label="Matricularse"
-              @click="abrirURL('https://www.cyldigital.es/user/login')"
-            />
+          <q-btn
+            push
+            rounded
+            size="sm"
+            color="secondary"
+            icon-right="directions"
+            label="Matricularse"
+            @click="abrirURL('https://www.cyldigital.es/user/login')"
+          />
         </q-collapsible>
         <q-item-main/>
       </q-card-main>
@@ -110,106 +110,46 @@ export default {
   // Definimos las variables en Vue
   data() {
     return {
-      // URL para obtener datos JSON de ValenBisi
-      endpoint:
-        "https://admin.sigecyl.es/servicios/actividades/actividadesOnline",
       // Array con información de cada uno de las estacione
       actividades: []
     };
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
-    this.getEstadoActividades();
+    // Comprobar si hay que actualizar y si se debe hacer, se hace
+    if (this.$hayQueActualizar()) {
+      this.$actualizarDatos();
+      //Esperar 3s a que se actualice
+      var start = new Date().getTime();
+      var end = start;
+      while (end < start + 3000) {
+        end = new Date().getTime();
+      }
+      // Fin del esperar
+
+      // Ponemos fecha de actualizacion y la guardamos localStorage
+      this.$ultimaActualizacion = new Date();
+      localStorage.setItem(
+        "ultimaActualizacion",
+        JSON.stringify(this.$ultimaActualizacion.toISOString())
+      );
+    }
+    // Obtenemos la informacion de los centros marcados
+    this.obtieneInformacionCentrosMarcados();
+    this.cargarFavoritos("favoritos-online");
   },
   // Metodos accesibles desde Vue
   methods: {
-    // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
-    getEstadoActividades() {
-      // Para que nos devuelvan los datos en JSON
-      axios.defaults.headers = {
-        Accept: "application/json"
-      };
-      // Definimos el comportamiento de Axios
-      axios
-        .get(this.endpoint)
-        .then(response => {
-          // Si, para coger este JSON debo hacer esta pirula
-          console.log(response.data);
-          var miJson = JSON.parse(JSON.stringify(response.data));
+    abrirURL(url) {
+      openURL(url);
+    },
 
-          // Vaciamos el array
-          this.actividades = [];
-          // Si hay actividades...
-          if (typeof miJson.actividades !== "undefined") {
-            // Pasamos el contenido al array "actividades"
-            for (var x in miJson.actividades) {
-              //Formamos el dato
-              var dato;
-              // Array de palabras tras eliminar stopwords y realizar stemming
-              var arrayMineria = [];
-              // Array para palabras solo eliminado stopwords y simbolos extraños
-              var arrayTags = [];
-              // Obtenemos texto sin acentos y sin minusculas
-              var textoMineria = this.$eliminarAcentos(
-                miJson.actividades[x].nombre
-              ).toLowerCase();
-              // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
-              // se convierten en un solo espacio
-              textoMineria = this.$soloMinusculasYEspacios(textoMineria);
-              // Eliminamos stop word generales mas algunas que ponemos custom
+    // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
+    obtieneInformacionCentrosMarcados() {
+      this.actividades = JSON.parse(
+        localStorage.getItem("presenciales-online")
+      );
 
-              arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
-              arrayTags = sw.removeStopwords(arrayTags, this.$misStopWords);
-
-              // Eliminamos duplicados
-              arrayTags = this.$eliminarDuplicados(arrayTags);
-
-              arrayTags.sort();
-              // Aplicamos Stemming a cada palabra
-              for (var i in arrayTags) {
-                arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
-              }
-
-              // Tratamos la descripcion elimiando CDATA y HTML
-              // Eliminamos CDATA
-              var miDescripcion = this.$CDATAToText(
-                miJson.actividades[x].descripcion
-              );
-              dato = {
-                nombre: miJson.actividades[x].nombre,
-                descripcion: miDescripcion,
-                tematica: miJson.actividades[x].tematica,
-                fechaInicio: miJson.actividades[x].fechaInicio,
-                fechaFin: miJson.actividades[x].fechaFin,
-                numeroHoras: miJson.actividades[x].numeroHoras,
-                numeroPlazas: miJson.actividades[x].numeroPlazas,
-                numeroSolicitudes: miJson.actividades[x].numeroSolicitudes,
-                aviso: miJson.actividades[x].aviso,
-                requisitos: miJson.actividades[x].requisitos,
-                horaInicioWebinar: miJson.actividades[x].horaInicioWebinar,
-                horaFinWebinar: miJson.actividades[x].horaFinWebinar,
-                tagsGenerados: arrayTags,
-                bolsaDePalabras: arrayMineria,
-                favorito: false
-              };
-              // Lo metemos en un array
-              this.actividades.push(dato);
-            }
-          }
-          //Actualizamos favoritos
-          this.cargarFavoritos("favoritos-online");
-
-          // Salvo en localstorage
-          localStorage.setItem(
-            "datos-online",
-            JSON.stringify(this.actividades)
-          );
-        })
-        // En caso de error, mostramos el error para facilitar depuración
-        .catch(error => {
-          console.log("-----error-------");
-          console.log(error);
-        });
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
