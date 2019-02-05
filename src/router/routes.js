@@ -7,6 +7,7 @@ const routes = [
       { path: '', component: () => import('pages/ActividadesOnline.vue') },
       { path: '/actonline', component: () => import('pages/ActividadesOnline.vue') },
       { path: '/actprescharlas', component: () => import('pages/ActividadesPresencialesCharlas.vue') },
+      { path: '/actpresenciales', component: () => import('pages/ActividadesPresenciales.vue') },
       { path: '/actprescursos', component: () => import('pages/ActividadesPresencialesCursos.vue') },
       { path: '/actprestalleres', component: () => import('pages/ActividadesPresencialesTalleres.vue') },
       { path: '/suscripciones', component: () => import('pages/Suscripciones.vue') },

@@ -1,93 +1,36 @@
 <template>
   <q-page class="flex-top q-ma-lg">
     <q-item-tile label class="q-mb-md">
-      <strong>Actividades presenciales</strong>
+      <strong>Actividades Online</strong>
     </q-item-tile>
-    <q-alert v-if="this.actividades.length==0" icon="info" color="tertiary">
-      No hay actividades de este tipo disponibles.
-      Comprueba en el menú Suscripciones las provincias que deseas mostrar.
-    </q-alert>
+    <q-alert v-if="this.actividades.length==0" type="info">No hay actividades disponibles.</q-alert>
 
-    <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre+act.fechaInicio">
+    <q-card class="q-mb-md" v-for="act in actividades" :key="act.nombre">
       <q-card-title>
+        <q-checkbox
+          v-model="act.favorito"
+          checked-icon="favorite"
+          unchecked-icon="favorite_border"
+          @input="$guardarFavoritos(actividades,'favoritos-online'); if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 3000, type: 'positive'});"
+        />
         {{ act.nombre }}
-        <div slot="right" class="row items-center">
-          <q-checkbox
-            v-model="act.favorito"
-            checked-icon="favorite"
-            unchecked-icon="favorite_border"
-            @input="$guardarFavoritos(actividades,'favoritos-cursos');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
-          />
-        </div>
-        <div slot="subtitle">
-          <q-icon name="cloud" size="16px"/>&nbsp;
-          <small>Online</small>
-        </div>
+        <span slot="subtitle">
+          <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
+          <small>{{act.tematica}}</small>
+        </span>
       </q-card-title>
       <q-card-main>
-        <q-collapsible label="Ver información" style="background-color: #e4b6d5">
-          <div>
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="20px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </div>
-          <br>
-          {{ act.descripcion }}
-          <br>
-          <br>
-          <!-- He incluido aviso y requisitos aunque no hay ninguna actividad online que los tenga de momento-->
-          <p v-if="act.aviso">
-            <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
-            <strong>{{ act.aviso }}</strong>
-          </p>
-          <p v-if="act.requisitos">
-            <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
-            <strong>{{ act.requisitos }}</strong>
-          </p>
-          <p>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-            </small>
-          </p>
-          <p v-if="act.horaInicioWebinar">
-            <q-icon name="video_call"/>&nbsp;&nbsp;
-            <small>
-              <strong>Horario webinar: {{ act.horaInicioWebinar }}h. - {{ act.horaFinWebinar }}h. </strong>
-            </small>
-          </p>
-            <q-btn
-              push
-              rounded
-              size="sm"
-              color="secondary"
-              icon-right="directions"
-              label="Matricularse"
-              @click="abrirURL('https://www.cyldigital.es/user/login')"
-            />
-        </q-collapsible>
+        <pre class="text-faded">Fecha inicio actividad: {{ $parsearFecha(act.fechaInicio) }}</pre>
+        <pre class="text-faded">Fecha fin actividad: {{ $parsearFecha(act.fechaFin) }}</pre>
+        <div class="group">
+          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
+        </div>
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
-      <q-card-actions align="between">
-        <div>
-          <q-icon name="watch_later"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.numeroHoras }} h</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="person"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
-          </small>
-        </div>
+      <q-card-actions>
+        <q-icon name="event"/>&nbsp;&nbsp;
       </q-card-actions>
-      <q-card-separator/>
-      <!-- q-card-actions align="between">
-        <div>
-          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
-        </div>
-      </q-card-actions-->
     </q-card>
   </q-page>
 </template>
@@ -175,19 +118,17 @@ export default {
               var miDescripcion = this.$CDATAToText(
                 miJson.actividades[x].descripcion
               );
+
               dato = {
                 nombre: miJson.actividades[x].nombre,
                 descripcion: miDescripcion,
                 tematica: miJson.actividades[x].tematica,
                 fechaInicio: miJson.actividades[x].fechaInicio,
+                fechaInicioMatriculacion:
+                  miJson.actividades[x].fechaInicioMatriculacion,
                 fechaFin: miJson.actividades[x].fechaFin,
-                numeroHoras: miJson.actividades[x].numeroHoras,
-                numeroPlazas: miJson.actividades[x].numeroPlazas,
-                numeroSolicitudes: miJson.actividades[x].numeroSolicitudes,
-                aviso: miJson.actividades[x].aviso,
-                requisitos: miJson.actividades[x].requisitos,
-                horaInicioWebinar: miJson.actividades[x].horaInicioWebinar,
-                horaFinWebinar: miJson.actividades[x].horaFinWebinar,
+                fechaFinMatriculacion:
+                  miJson.actividades[x].fechaFinMatriculacion,
                 tagsGenerados: arrayTags,
                 bolsaDePalabras: arrayMineria,
                 favorito: false

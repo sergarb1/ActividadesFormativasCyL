@@ -92,9 +92,6 @@ export default ({
     }, []);
   }
 
-
-
-
   // Función que guarda en localStorage un texto en formato JSON
   // con los favoritos que reciba
   Vue.prototype.$guardarFavoritos = function (misActividades, idLocalStorage) {
@@ -166,7 +163,7 @@ export default ({
   Vue.prototype.$actualizarDatos = function () {
     var provTmp;
     var actividades = [];
-    var urlTipo=[
+    /* var urlTipo=[
       { tipo:"datos-cursos",
         url:"https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso",
       },
@@ -176,12 +173,10 @@ export default ({
       { tipo:"datos-charlas",
         url:"https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=charla",
       }
-    ];
+    ];*/
+    var url="https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso&tipoActividad=taller&tipoActividad=charla"
 
-
-    for(var i in urlTipo){
-
-    
+    // for(var i in urlTipo){
       if (localStorage.getItem("provincias")) {
         provTmp = JSON.parse(localStorage.getItem("provincias"));
       } else {
@@ -196,17 +191,107 @@ export default ({
             provTmp[x].nombre
           ).toLowerCase();
           console.log("Pido " + centroTMP);
-          this.$getEstadoActividades(centroTMP, urlTipo[i].url, urlTipo[i].tipo);
+          this.$getEstadoActividades(centroTMP, url);
         }
       }
-
-    }
+    // } // for
   }
 
 
-
-
   // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
+  Vue.prototype.$getEstadoActividades = function (centro, url) {
+    console.log(centro + " "+url)
+    // Para que nos devuelvan los datos en JSON
+    axios.defaults.headers = {
+      Accept: "application/json"
+    };
+    // Definimos el comportamiento de Axios
+    console.log(url + "&centro=" + centro)
+
+    axios
+      .get(url + "&centro=" + centro)
+      .then(response => {
+      var actividades = [];
+
+        // Si, para coger este JSON debo hacer esta pirula
+        var miJson = JSON.parse(JSON.stringify(response.data));
+        // Si hay actividades...
+        if (typeof miJson.actividades !== "undefined") {
+          // Pasamos el contenido al array "actividades"
+          for (var x in miJson.actividades) {
+            //Formamos el dato
+            var dato;
+            // Array de palabras tras eliminar stopwords y realizar stemming
+            var arrayMineria = [];
+            // Array para palabras solo eliminado stopwords y simbolos extraños
+            var arrayTags = [];
+            // Obtenemos texto sin acentos y sin minusculas
+            var textoMineria = this.$eliminarAcentos(
+              miJson.actividades[x].nombre
+            ).toLowerCase();
+            // solo dejamos letras y espacios. Si hay varios espacios o tabuladores, saltos, etc..
+            // se convierten en un solo espacio
+            textoMineria = this.$soloMinusculasYEspacios(textoMineria);
+
+            // Eliminamos stop word generales mas algunas que ponemos custom
+            arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
+            arrayTags = sw.removeStopwords(arrayTags, this.$misStopWords);
+
+            // Eliminamos duplicados
+            arrayTags = this.$eliminarDuplicados(arrayTags);
+            arrayTags.sort();
+            // Aplicamos Stemming a cada palabra
+            for (var i in arrayTags) {
+              arrayMineria[i] = natural.PorterStemmerEs.stem(arrayTags[i]);
+            }
+
+            // Tratamos la descripcion elimiando CDATA y HTML
+            // Eliminamos CDATA
+
+            var miDescripcion = this.$CDATAToText(
+              miJson.actividades[x].descripcion
+            );
+
+            var miAviso = this.$CDATAToText(
+              miJson.actividades[x].aviso
+            );
+            // Construimos el dato
+            dato = {
+              nombre: miJson.actividades[x].nombre,
+              centro: miJson.actividades[x].centro,
+              descripcion: miDescripcion,
+              tematica: miJson.actividades[x].tematica,
+              nivel: miJson.actividades[x].nivel,
+              numeroHoras: miJson.actividades[x].numeroHoras,
+              fechaInicio: miJson.actividades[x].fechaInicio,
+              fechaInicioMatriculacion: miJson.actividades[x].fechaInicioMatriculacion,
+              fechaFin: miJson.actividades[x].fechaFin,
+              fechaFinMatriculacion: miJson.actividades[x].fechaFinMatriculacion,
+              numeroPlazas: miJson.actividades[x].numeroPlazas,
+              numeroSolicitudes: miJson.actividades[x].numeroSolicitudes,
+              aviso: miAviso,
+              tagsGenerados: arrayTags,
+              bolsaDePalabras: arrayMineria,
+              favorito: false
+            };
+            // Lo metemos en un array
+            actividades.push(dato);
+          }
+        }
+        // Salvo en localstorage
+        localStorage.setItem(
+          "presenciales",
+          JSON.stringify(actividades)
+        );
+      })
+      // En caso de error, mostramos el error para facilitar depuración
+      .catch(error => {
+        console.log("-----error-------");
+        console.log(error);
+      });
+  }
+
+  /* 
   Vue.prototype.$getEstadoActividades = function (centro, url, tipo) {
     console.log(centro + " "+url+" "+tipo)
     // Para que nos devuelvan los datos en JSON
@@ -297,6 +382,7 @@ export default ({
         console.log(error);
       });
   }
+  */ 
 
 
   // Opciones filtro
