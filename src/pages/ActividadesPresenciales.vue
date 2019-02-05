@@ -166,21 +166,19 @@ export default {
       // Ponemos fecha de actualizacion y la guardamos localStorage
       this.$ultimaActualizacion=new Date();
       localStorage.setItem("ultimaActualizacion",JSON.stringify(this.$ultimaActualizacion.toISOString()));
-    // }
+    // } //if
     // Obtenemos la informacion de los centros marcados
     this.obtieneInformacionCentrosMarcados();
     //this.cargarFavoritos("favoritos-cursos");
   },
   // Metodos accesibles desde Vue
   methods: {
-
     abrirURL(url){
        openURL(url);
     },
 
     // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
     obtieneInformacionCentrosMarcados() {
-      console.log("OJO "+localStorage.getItem("presenciales"))
       if(localStorage.getItem("presenciales")){
         this.actividades=JSON.parse(localStorage.getItem("presenciales"));
       }
