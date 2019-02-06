@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex-top q-ma-lg">
     <q-item-tile label class="q-mb-md">
-      <strong>Actividades presenciales</strong>
+      <strong>Actividades Online</strong>
     </q-item-tile>
     <q-alert v-if="this.actividades.length==0" icon="info" color="tertiary">
       No hay actividades de este tipo disponibles.
@@ -149,7 +149,10 @@ export default {
       this.actividades = JSON.parse(
         localStorage.getItem("presenciales-online")
       );
-
+      // Ordeno array actividades online
+      this.actividades.sort(function(a, b) {
+        return a.fechaInicio.localeCompare(b.fechaInicio);
+      });
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos

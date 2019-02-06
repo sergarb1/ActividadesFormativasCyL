@@ -196,9 +196,17 @@ export default {
           var centroTMP = this.$eliminarAcentos(
             provTmp[x].nombre
           ).toLowerCase();
-            this.actividades=this.$unirArrays(this.actividades, JSON.parse(localStorage.getItem("presenciales-" + centroTMP)));
+          this.actividades = this.$unirArrays(
+            this.actividades,
+            JSON.parse(localStorage.getItem("presenciales-" + centroTMP))
+          );
         }
       }
+
+      // Ordeno array actividades presenciales
+      this.actividades.sort(function(a, b) {
+        return a.fechaInicio.localeCompare(b.fechaInicio);
+      });
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos

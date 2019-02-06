@@ -29,7 +29,7 @@
                   color="primary"
                   v-model="provinciasEstadoTodas"
                   label="Todas"
-                  @input="marcarTodas();guardar();"
+                  @input="marcarTodasProvincias();guardar();"
                 />
               </q-item-tile>
             </q-item-main>
@@ -44,7 +44,7 @@
                   color="primary"
                   v-bind:label="prov.nombre"
                   v-model="prov.marcado"
-                  @input="guardar"
+                  @input="guardar();"
                 />
               </q-item-tile>
             </q-item-main>
@@ -64,7 +64,7 @@
                   color="primary"
                   v-model="tematicasEstadoTodas"
                   label="Todas"
-                  @input="marcarTodas();guardar();"
+                  @input="marcarTodasTematicas();guardar();"
                 />
               </q-item-tile>
             </q-item-main>
@@ -99,7 +99,7 @@
                   color="primary"
                   v-model="nivelesEstadoTodas"
                   label="Todas"
-                  @input="marcarTodas();guardar();"
+                  @input="marcarTodasNiveles();guardar();"
                 />
               </q-item-tile>
             </q-item-main>
@@ -139,12 +139,13 @@
         type="date"
         float-label="Fecha de inicio posterior a"
       />
-      <q-datetime
+      <!--
+        <q-datetime
         v-model="filtro.fechaFin"
         @input="guardar()"
         type="date"
         float-label="Fecha de fin anterior a"
-      />
+      />-->
       <!-- q-input
       v-model="form.hora"
       float-label="Hora"
@@ -152,9 +153,9 @@
       /-->
       <q-btn
         color="primary"
-        @click="guardar"
+        to="/resultadobusqueda"
         :loading="this.grabando"
-        label="Guardar"
+        label="Buscar"
         :disabled="this.desactivado"
       >
         <!-- Para elegir otro spinner, tengo que cargar en quasar.conf.js el que sea -->
@@ -217,13 +218,37 @@ export default {
         provincias: [],
         tematicas: [],
         niveles: [],
-        busqueda: []
+        busqueda: ""
       }
     };
   },
-  created() {},
+  mounted() {
+    //Recuperamos estado de los filtros
+    this.recuperarFiltro();
+  },
   methods: {
     guardar() {
+      // Movemos el "Todas" de provincias
+      this.provinciasEstadoTodas = true;
+      for (var i in this.provincias) {
+        if (this.provincias[i].marcado == false)
+          this.provinciasEstadoTodas = false;
+      }
+      // Movemos el "Todas" de tematicas
+      this.tematicasEstadoTodas = true;
+      for (var i in this.tematicas) {
+        if (this.tematicas[i].marcado == false)
+          this.tematicasEstadoTodas = false;
+      }
+
+      // Movemos el "Todas" de niveles
+      this.nivelesEstadoTodas = true;
+      for (var i in this.niveles) {
+        if (this.niveles[i].marcado == false)
+          this.nivelesEstadoTodas = false;
+      }
+
+      // Guardamos los filtros
       this.filtro.provincias = [];
       for (var i in this.provincias) {
         if (this.provincias[i].marcado) {
@@ -243,6 +268,58 @@ export default {
         }
       }
       localStorage.setItem("filtro", JSON.stringify(this.filtro));
+    },
+    // Funcion que recupera los filtros
+    recuperarFiltro(){
+      if(localStorage.getItem('filtro')){
+        this.filtro=JSON.parse(localStorage.getItem('filtro'));
+
+        // Cargamos parte de los filtros
+        for (var i in this.filtro.provincias) {
+          for(var j in this.provincias){
+            if(this.filtro.provincias[i]==this.provincias[j].nombre){
+                this.provincias[j].marcado=true;
+            }
+          }
+        }
+for (var i in this.filtro.tematicas) {
+          for(var j in this.tematicas){
+            if(this.filtro.tematicas[i]==this.tematicas[j].nombre){
+                this.tematicas[j].marcado=true;
+            }
+          }
+        }
+        for (var i in this.filtro.niveles) {
+          for(var j in this.niveles){
+            if(this.filtro.niveles[i]==this.niveles[j].nombre){
+                this.niveles[j].marcado=true;
+            }
+          }
+        }
+
+        // Guardamos para recargar
+        this.guardar();
+      }
+      
+    },
+
+    // Funcion que marca/desmarca todas las provincias
+    marcarTodasProvincias() {
+      for (var i in this.provincias) {
+        this.provincias[i].marcado = this.provinciasEstadoTodas;
+      }
+    },
+    // Funcion que marca/desmarca todas las tematicas
+    marcarTodasTematicas() {
+      for (var i in this.tematicas) {
+        this.tematicas[i].marcado = this.tematicasEstadoTodas;
+      }
+    },
+    // Funcion que marca/desmarca todas las niveles
+    marcarTodasNiveles() {
+      for (var i in this.niveles) {
+        this.niveles[i].marcado = this.nivelesEstadoTodas;
+      }
     }
   }
 };

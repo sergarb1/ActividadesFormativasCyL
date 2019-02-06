@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex-top q-ma-lg">
     <!-- Collapsible Cursos -->
-    <q-collapsible icon="school" label="Cursos">
+    <q-collapsible icon="school" label="Act. Presenciales">
       <q-item-tile label class="q-mb-md">
         <strong>Recomendaciones</strong>
       </q-item-tile>
@@ -9,177 +9,130 @@
 
       <q-card
         class="q-mb-md"
-        v-for="act in recomCursos"
+        v-for="act in datosCursos"
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
           {{ act.nombre }}
-          <span slot="subtitle">
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </span>
+          <div slot="right" class="row items-center">
+            <q-checkbox
+              v-model="act.favorito"
+              checked-icon="favorite"
+              unchecked-icon="favorite_border"
+              @input="$guardarFavoritos(datosCursos,'favoritos-presenciales');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
+            />
+          </div>
+          <div slot="subtitle">
+            <q-icon name="room" size="16px"/>&nbsp;
+            <small>{{act.centro}}</small>
+          </div>
         </q-card-title>
         <q-card-main>
-          {{ act.descripcion }}
+          <q-collapsible label="Ver información" style="background-color: #e4b6d5">
+            <div>
+              <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="20px"/>&nbsp;
+              <small>{{act.tematica}}</small>
+            </div>
+            <br>
+            {{ act.descripcion }}
+            <br>
+            <br>
+            <p v-if="act.aviso">
+              <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
+              <strong>{{ act.aviso }}</strong>
+            </p>
+            <p>
+              <q-icon name="event_note"/>&nbsp;&nbsp;
+              <small>
+                <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
+              </small>
+            </p>
+            <p>
+              <q-icon name="event"/>&nbsp;&nbsp;
+              <small>
+                <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+              </small>
+            </p>
+            <q-btn
+              push
+              rounded
+              size="sm"
+              color="secondary"
+              icon-right="directions"
+              label="Matricularse"
+              @click="abrirURL('https://www.cyldigital.es/user/login')"
+            />
+          </q-collapsible>
           <q-item-main/>
         </q-card-main>
         <q-card-separator/>
+        <!-- q-card-actions align="between">
+        <div>
+          <q-icon name="event_note"/>&nbsp;&nbsp;
+          <small>
+            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
+          </small>
+        </div>
+        <div>
+          <q-icon name="trending_up"/>&nbsp;&nbsp;
+          <small>
+            <strong>Nivel: {{ act.nivel }}</strong>
+          </small>
+        </div>
+      </q-card-actions>
+      <q-card-actions align="between">
+        <div>
+          <q-icon name="event"/>&nbsp;&nbsp;
+          <small>
+            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+          </small>
+        </div>
+        <div>
+          <q-icon name="watch_later"/>&nbsp;&nbsp;
+          <small>
+            <strong>Nº horas: {{ act.numeroHoras }}</strong>
+          </small>
+        </div>
+      </q-card-actions>
+      <q-card-actions align="between">
+        <div>
+        </div>
+        <div>
+          <q-icon name="person"/>&nbsp;&nbsp;
+          <small>
+            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
+          </small>
+        </div>
+        </q-card-actions-->
         <q-card-actions align="between">
-          <div>
-            <q-icon name="event_note"/>&nbsp;&nbsp;
-            <small>
-              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-            </small>
-          </div>
           <div>
             <q-icon name="trending_up"/>&nbsp;&nbsp;
             <small>
-              <strong>Nivel: {{ act.nivel }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+              <strong>{{ act.nivel }}</strong>
             </small>
           </div>
           <div>
             <q-icon name="watch_later"/>&nbsp;&nbsp;
             <small>
-              <strong>Nº horas: {{ act.numeroHoras }}</strong>
+              <strong>{{ act.numeroHoras }} h</strong>
+            </small>
+          </div>
+          <div>
+            <q-icon name="person"/>&nbsp;&nbsp;
+            <small>
+              <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
             </small>
           </div>
         </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
-          </div>
-        </q-card-actions>
+        <q-card-separator/>
+        <!-- q-card-actions align="between">
+        <div>
+          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
+        </div>
+        </q-card-actions-->
       </q-card>
     </q-collapsible>
     <!-- fin collapsible cursos -->
-    <!-- Collapsible charlas -->
-    <q-collapsible icon="mode_comment" label="Charlas">
-      <q-item-tile label class="q-mb-md">
-        <strong>Recomendaciones</strong>
-      </q-item-tile>
-      <q-alert v-if="this.recomCharlas.length==0" type="info">No hay actividades disponibles.</q-alert>
-
-      <q-card
-        class="q-mb-md"
-        v-for="act in recomCharlas"
-        :key="act.nombre+act.centro+act.fechaInicio"
-      >
-        <q-card-title>
-          {{ act.nombre }}
-          <span slot="subtitle">
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </span>
-        </q-card-title>
-        <q-card-main>
-          {{ act.descripcion }}
-          <q-item-main/>
-        </q-card-main>
-        <q-card-separator/>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event_note"/>&nbsp;&nbsp;
-            <small>
-              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nivel: {{ act.nivel }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nº horas: {{ act.numeroHoras }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
-          </div>
-        </q-card-actions>
-      </q-card>
-    </q-collapsible>
-    <!-- fin collapsible charlas -->
-    <!-- Collapsible talleres -->
-    <q-collapsible icon="extension" label="Talleres">
-      <q-item-tile label class="q-mb-md">
-        <strong>Recomendaciones</strong>
-      </q-item-tile>
-      <q-alert v-if="this.recomTalleres.length==0" type="info">No hay actividades disponibles.</q-alert>
-
-      <q-card
-        class="q-mb-md"
-        v-for="act in recomTalleres"
-        :key="act.nombre+act.centro+act.fechaInicio"
-      >
-        <q-card-title>
-          {{ act.nombre }}
-          <span slot="subtitle">
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </span>
-        </q-card-title>
-        <q-card-main>
-          {{ act.descripcion }}
-          <q-item-main/>
-        </q-card-main>
-        <q-card-separator/>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event_note"/>&nbsp;&nbsp;
-            <small>
-              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nivel: {{ act.nivel }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nº horas: {{ act.numeroHoras }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
-          </div>
-        </q-card-actions>
-      </q-card>
-    </q-collapsible>
-    <!-- fin collapsible talleres -->
     <!-- Collapsible online -->
     <q-collapsible icon="cloud" label="Online">
       <q-item-tile label class="q-mb-md">
@@ -187,56 +140,86 @@
       </q-item-tile>
       <q-alert v-if="this.recomOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
 
-      <q-card
-        class="q-mb-md"
-        v-for="act in recomOnline"
-        :key="act.nombre+act.centro+act.fechaInicio"
-      >
+      <q-card class="q-mb-md" v-for="act in datosOnline" :key="act.nombre+act.fechaInicio">
         <q-card-title>
           {{ act.nombre }}
-          <span slot="subtitle">
-            <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="16px"/>&nbsp;
-            <small>{{act.tematica}}</small>
-          </span>
+          <div slot="right" class="row items-center">
+            <q-checkbox
+              v-model="act.favorito"
+              checked-icon="favorite"
+              unchecked-icon="favorite_border"
+              @input="$guardarFavoritos(datosOnline,'favoritos-online');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
+            />
+          </div>
+          <div slot="subtitle">
+            <q-icon name="cloud" size="16px"/>&nbsp;
+            <small>Online</small>
+          </div>
         </q-card-title>
         <q-card-main>
-          {{ act.descripcion }}
+          <q-collapsible label="Ver información" style="background-color: #e4b6d5">
+            <div>
+              <q-icon v-bind:name="$mostrarIcono(act.tematica)" size="20px"/>&nbsp;
+              <small>{{act.tematica}}</small>
+            </div>
+            <br>
+            {{ act.descripcion }}
+            <br>
+            <br>
+            <!-- He incluido aviso y requisitos aunque no hay ninguna actividad online que los tenga de momento-->
+            <p v-if="act.aviso">
+              <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
+              <strong>{{ act.aviso }}</strong>
+            </p>
+            <p v-if="act.requisitos">
+              <q-icon name="warning" style="font-size: 20px"/>&nbsp;&nbsp;
+              <strong>{{ act.requisitos }}</strong>
+            </p>
+            <p>
+              <q-icon name="event"/>&nbsp;&nbsp;
+              <small>
+                <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
+              </small>
+            </p>
+            <p v-if="act.horaInicioWebinar">
+              <q-icon name="video_call"/>&nbsp;&nbsp;
+              <small>
+                <strong>Horario webinar: {{ act.horaInicioWebinar }}h. - {{ act.horaFinWebinar }}h.</strong>
+              </small>
+            </p>
+            <q-btn
+              push
+              rounded
+              size="sm"
+              color="secondary"
+              icon-right="directions"
+              label="Matricularse"
+              @click="abrirURL('https://www.cyldigital.es/user/login')"
+            />
+          </q-collapsible>
           <q-item-main/>
         </q-card-main>
         <q-card-separator/>
         <q-card-actions align="between">
           <div>
-            <q-icon name="event_note"/>&nbsp;&nbsp;
-            <small>
-              <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-            </small>
-          </div>
-          <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
-            <small>
-              <strong>Nivel: {{ act.nivel }}</strong>
-            </small>
-          </div>
-        </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-icon name="event"/>&nbsp;&nbsp;
-            <small>
-              <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-            </small>
-          </div>
-          <div>
             <q-icon name="watch_later"/>&nbsp;&nbsp;
             <small>
-              <strong>Nº horas: {{ act.numeroHoras }}</strong>
+              <strong>{{ act.numeroHoras }} h</strong>
+            </small>
+          </div>
+          <div>
+            <q-icon name="person"/>&nbsp;&nbsp;
+            <small>
+              <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
             </small>
           </div>
         </q-card-actions>
-        <q-card-actions align="between">
-          <div>
-            <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="primary">{{ miTag }}</q-chip>
-          </div>
-        </q-card-actions>
+        <q-card-separator/>
+        <!-- q-card-actions align="between">
+        <div>
+          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
+        </div>
+        </q-card-actions-->
       </q-card>
     </q-collapsible>
     <!-- fin collapsible online -->
@@ -267,21 +250,11 @@ export default {
       // Array con información de cada uno de las estacione
       actividadesCursos: [],
       actividadesCursosPalabras: [],
-
-      actividadesCharlas: [],
-      actividadesCharlasPalabras: [],
-      actividadesTalleres: [],
-      actividadesTalleresPalabras: [],
-      actividadesOnline: [],
       actividadesOnlinePalabras: [],
       datosCursos: [],
-      datosCharlas: [],
-      datosTalleres: [],
       datosOnline: [],
 
       recomCursos: [],
-      recomCharlas: [],
-      recomTalleres: [],
       recomOnline: []
     };
   },
@@ -294,36 +267,34 @@ export default {
   methods: {
     // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
     getEstadoActividades() {
+      // Obtenemos datos presenciales
       this.datosCursos = [];
-      this.datosCharlas = [];
-      this.datosTalleres = [];
-      this.datosOnline = [];
+      var provTmp;
 
-      if (localStorage.getItem("datos-cursos")) {
-        var tmp = JSON.parse(localStorage.getItem("datos-cursos"));
-        for (var x in tmp) {
-          this.datosCursos.push(tmp[x]);
-        }
+      if (localStorage.getItem("provincias")) {
+        provTmp = JSON.parse(localStorage.getItem("provincias"));
+      } else {
+        provTmp = this.$provincias;
       }
 
-      if (localStorage.getItem("datos-charlas")) {
-        var tmp = JSON.parse(localStorage.getItem("datos-charlas"));
-        for (var x in tmp) {
-          this.datosCharlas.push(tmp[x]);
+      // Recorremos las provincias
+      for (var x in provTmp) {
+        // Si la provincia esta marcada
+        if (provTmp[x].marcado) {
+          var centroTMP = this.$eliminarAcentos(
+            provTmp[x].nombre
+          ).toLowerCase();
+          this.datosCursos = this.$unirArrays(
+            this.datosCursos,
+            JSON.parse(localStorage.getItem("presenciales-" + centroTMP))
+          );
         }
       }
-      if (localStorage.getItem("datos-talleres")) {
-        var tmp = JSON.parse(localStorage.getItem("datos-talleres"));
-        for (var x in tmp) {
-          this.datosTalleres.push(tmp[x]);
-        }
-      }
-      if (localStorage.getItem("presenciales-online")) {
-        var tmp = JSON.parse(localStorage.getItem("presenciales-online"));
-        for (var x in tmp) {
-          this.datosOnline.push(tmp[x]);
-        }
-      }
+
+      //Obtenemos datos online
+      this.datosOnline = JSON.parse(
+        localStorage.getItem("presenciales-online")
+      );
 
       this.actividadesCursos = [];
       this.actividadesCursosPalabras = [];
@@ -331,8 +302,8 @@ export default {
       this.actividadesTalleres = [];
       this.actividadesOnline = [];
 
-      if (localStorage.getItem("favoritos-cursos")) {
-        var tmp = JSON.parse(localStorage.getItem("favoritos-cursos"));
+      if (localStorage.getItem("favoritos-presenciales")) {
+        var tmp = JSON.parse(localStorage.getItem("favoritos-presenciales"));
         for (var x in tmp) {
           this.actividadesCursos.push(tmp[x]);
           for (var y in tmp[x].bolsaDePalabras)
@@ -340,23 +311,6 @@ export default {
         }
       }
 
-      if (localStorage.getItem("favoritos-charlas")) {
-        var tmp = JSON.parse(localStorage.getItem("favoritos-charlas"));
-        for (var x in tmp) {
-          this.actividadesCharlas.push(tmp[x]);
-
-          for (var y in tmp[x].bolsaDePalabras)
-            this.actividadesCharlasPalabras.push(tmp[x].bolsaDePalabras[y]);
-        }
-      }
-      if (localStorage.getItem("favoritos-talleres")) {
-        var tmp = JSON.parse(localStorage.getItem("favoritos-talleres"));
-        for (var x in tmp) {
-          this.actividadesTalleres.push(tmp[x]);
-          for (var y in tmp[x].bolsaDePalabras)
-            this.actividadesTalleresPalabras.push(tmp[x].bolsaDePalabras[y]);
-        }
-      }
       if (localStorage.getItem("favoritos-online")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-online"));
         for (var x in tmp) {
@@ -368,9 +322,10 @@ export default {
 
       // Generamos recomendaciones cursos
       this.recomendacionesCursos();
-      this.recomendacionesCharlas();
-      this.recomendacionesTalleres();
+      this.cargarFavoritosPresenciales("favoritos-presenciales");
+    
       this.recomendacionesOnline();
+      this.cargarFavoritosOnline("favoritos-online");
     },
     //Genera recomendaciones de cursos
     recomendacionesCursos() {
@@ -419,112 +374,6 @@ export default {
         }
         if (!encontrado) {
           this.recomCursos.push(this.datosCursos[i]);
-          alcanzados++;
-        }
-      }
-    },
-    //Genera recomendaciones de charlas
-    recomendacionesCharlas() {
-      this.recomCharlas = [];
-
-      for (var i in this.datosCharlas) {
-        this.datosCharlas[i].puntosRecomendacion = 0;
-        for (var j in this.actividadesCharlas) {
-          if (
-            this.datosCharlas[i].nombre == this.actividadesCharlas[j].nombre
-          ) {
-            this.datosCharlas[i].puntosRecomendacion = -1;
-            break;
-          }
-        }
-        if (this.datosCharlas[i].puntosRecomendacion == 0) {
-          for (var k in this.datosCharlas[i].bolsaDePalabras) {
-            for (var j in this.actividadesCharlasPalabras) {
-              if (
-                this.actividadesCharlasPalabras[j] ==
-                this.datosCharlas[i].bolsaDePalabras[k]
-              ) {
-                this.datosCharlas[i].puntosRecomendacion++;
-                break;
-              }
-            }
-          }
-        }
-      }
-
-      // Ordenamos para obtener primero los elementos con mayor puntuacion de recomendacion
-      this.datosCharlas.sort(function(a, b) {
-        if (a.puntosRecomendacion > b.puntosRecomendacion) return -1;
-        if (a.puntosRecomendacion < b.puntosRecomendacion) return 1;
-        return 0;
-      });
-
-      // MEtemos las recomendaciones
-      var alcanzados = 0;
-      for (var i = 0; alcanzados < 3 && i < this.datosCharlas.length; i++) {
-        var encontrado = false;
-        for (var j in this.recomCharlas) {
-          // Ya recomendado uno con nombre igual
-          if (this.recomCharlas[j].nombre == this.datosCharlas[i].nombre) {
-            encontrado = true;
-            break;
-          }
-        }
-        if (!encontrado) {
-          this.recomCharlas.push(this.datosCharlas[i]);
-          alcanzados++;
-        }
-      }
-    },
-    //Genera recomendaciones de talleres
-    recomendacionesTalleres() {
-      this.recomTalleres = [];
-
-      for (var i in this.datosTalleres) {
-        this.datosTalleres[i].puntosRecomendacion = 0;
-        for (var j in this.actividadesTalleres) {
-          if (
-            this.datosTalleres[i].nombre == this.actividadesTalleres[j].nombre
-          ) {
-            this.datosTalleres[i].puntosRecomendacion = -1;
-            break;
-          }
-        }
-        if (this.datosTalleres[i].puntosRecomendacion == 0) {
-          for (var k in this.datosTalleres[i].bolsaDePalabras) {
-            for (var j in this.actividadesTalleresPalabras) {
-              if (
-                this.actividadesTalleresPalabras[j] ==
-                this.datosTalleres[i].bolsaDePalabras[k]
-              ) {
-                this.datosTalleres[i].puntosRecomendacion++;
-                break;
-              }
-            }
-          }
-        }
-      }
-
-      // Ordenamos para obtener primero los elementos con mayor puntuacion de recomendacion
-      this.datosTalleres.sort(function(a, b) {
-        if (a.puntosRecomendacion > b.puntosRecomendacion) return -1;
-        if (a.puntosRecomendacion < b.puntosRecomendacion) return 1;
-        return 0;
-      });
-
-      // MEtemos las recomendaciones
-      var alcanzados = 0;
-      for (var i = 0; alcanzados < 3 && i < this.datosTalleres.length; i++) {
-        var encontrado = false;
-        for (var j in this.recomTalleres) {
-          // Ya recomendado uno con nombre igual
-          if (this.recomTalleres[j].nombre == this.datosTalleres[i].nombre) {
-            encontrado = true;
-            break;
-          }
-        }
-        if (!encontrado) {
-          this.recomTalleres.push(this.datosTalleres[i]);
           alcanzados++;
         }
       }
@@ -578,7 +427,46 @@ export default {
           alcanzados++;
         }
       }
-    }
+    },
+    // Función que carga del localStorage un texto en formato JSON
+    // con los favoritos de cursos
+    cargarFavoritosPresenciales(idLocalStorage) {
+      if (localStorage.getItem(idLocalStorage)) {
+        var fav = JSON.parse(localStorage.getItem(idLocalStorage));
+        // Rellenamos los favoritos
+        for (var x in fav) {
+          for (var y in this.datosCursos) {
+            if (
+              fav[x].nombre == this.datosCursos[y].nombre &&
+              fav[x].centro == this.datosCursos[y].centro &&
+              fav[x].fechaInicio == this.datosCursos[y].fechaInicio
+            ) {
+              this.datosCursos[y].favorito = true;
+            }
+          }
+        }
+      }
+    },
+    // Función que carga del localStorage un texto en formato JSON
+    // con los favoritos de cursos
+    cargarFavoritosOnline(idLocalStorage) {
+      if (localStorage.getItem(idLocalStorage)) {
+        var fav = JSON.parse(localStorage.getItem(idLocalStorage));
+        // Rellenamos los favoritos
+        for (var x in fav) {
+          for (var y in this.datosOnline) {
+            if (
+              fav[x].nombre == this.datosOnline[y].nombre &&
+              fav[x].centro == this.datosOnline[y].centro &&
+              fav[x].fechaInicio == this.datosOnline[y].fechaInicio
+            ) {
+              this.datosOnline[y].favorito = true;
+            }
+          }
+        }
+      }
+    },
+    
   }
 };
 </script>
