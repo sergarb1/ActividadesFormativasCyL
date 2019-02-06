@@ -21,38 +21,7 @@ export default ({
     else return "group_work";
   };
 
-  // Función que permite generar notificaciones locales para dispositivos móviles
-  /*Vue.prototype.$notificar = function (array) {
-    var hoy = new Date()
-    // Hay que recordar que el mes es un número del 0 al 11
-    var dia = hoy.getDate().toString()
-    var mes = ''
-    if (hoy.getMonth() + 1 <= 9) mes = '0' + (hoy.getMonth() + 1)
-    else mes = (hoy.getMonth() + 1).toString()
-    var anio = hoy.getFullYear().toString()
-    var fecha = dia + mes + anio
-    var i = 0
-    if (localStorage.getItem('hoy') !== fecha) {
-      localStorage.setItem('hoy', fecha)
-      var notificaciones = []
-      for (i = 0; i < array.length; i++) {
-        notificaciones.push({id: i, title: array[i].hora + ' ' + array[i].titulo, text: array[i].descripcion, foreground: true, vibrate: true, smallIcon: '../assets/logo.png'})
-      }
-      cordova.plugins.notification.local.schedule(notificaciones)
-    } else {
-      for (i = 0; i < array.length; i++) {
-        console.log(array[i].titulo + array[i].hora)
-        cordova.plugins.notification.local.schedule({
-          title: 'Evento en Ataulfo Argenta',
-          // trigger: { at: new Date(anio, mes, dia, 9, 30) },
-          text: 'Este es el texto del evento',
-          // smallIcon: 'res://icon.ataulfo.png',
-          foreground: true,
-          vibrate: true
-        })
-      }
-    }
-  }*/
+
 
   // Función que parsea una fecha dada a una cadena en formato dd/mm/aaaa
   Vue.prototype.$parsearFecha = function (fecha) {
@@ -138,7 +107,6 @@ export default ({
 
   // Variable que comprueba si hace falta actualizar
   Vue.prototype.$hayQueActualizar = function () {
-    console.log("entro en hayqueactualizar")
     // Si esta en localStorage, la cogemos de ahi
     if (localStorage.getItem("ultimaActualizacion"))
       this.$ultimaActualizacion = new Date(
@@ -154,8 +122,6 @@ export default ({
     var date2 = new Date();
     // Calculamos la diferencia entre horas
     var difHoras = Math.abs(date1 - date2) / (60 * 60 * 1000);
-    console.log("salgo de hayqueactualizar")
-
     // Caso que la diferencia de horas sea mayor que 2
     if (difHoras > 2) {
       return true;
@@ -206,7 +172,6 @@ export default ({
     if (centro == "online") {
       urlLlamada = url;
     }
-    console.log("URL LLamada " + urlLlamada);
     axios
       .get(urlLlamada)
       .then(response => {
@@ -358,39 +323,93 @@ export default ({
   // Array con StopWords en castellano
   Vue.prototype.$misStopWords = ["", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "_", "a", "actualmente", "acuerdo", "adelante", "ademas", "además", "adrede", "afirmó", "agregó", "ahi", "ahora", "ahí", "al", "algo", "alguna", "algunas", "alguno", "algunos", "algún", "alli", "allí", "alrededor", "ambos", "ampleamos", "antano", "antaño", "ante", "anterior", "antes", "apenas", "aproximadamente", "aquel", "aquella", "aquellas", "aquello", "aquellos", "aqui", "aquél", "aquélla", "aquéllas", "aquéllos", "aquí", "arriba", "arribaabajo", "aseguró", "asi", "así", "atras", "aun", "aunque", "ayer", "añadió", "aún", "b", "bajo", "bastante", "bien", "breve", "buen", "buena", "buenas", "bueno", "buenos", "c", "cada", "casi", "cerca", "cierta", "ciertas", "cierto", "ciertos", "cinco", "claro", "comentó", "como", "con", "conmigo", "conocer", "conseguimos", "conseguir", "considera", "consideró", "consigo", "consigue", "consiguen", "consigues", "contigo", "contra", "cosas", "creo", "cual", "cuales", "cualquier", "cuando", "cuanta", "cuantas", "cuanto", "cuantos", "cuatro", "cuenta", "cuál", "cuáles", "cuándo", "cuánta", "cuántas", "cuánto", "cuántos", "cómo", "d", "da", "dado", "dan", "dar", "de", "debajo", "debe", "deben", "debido", "decir", "dejó", "del", "delante", "demasiado", "demás", "dentro", "deprisa", "desde", "despacio", "despues", "después", "detras", "detrás", "dia", "dias", "dice", "dicen", "dicho", "dieron", "diferente", "diferentes", "dijeron", "dijo", "dio", "donde", "dos", "durante", "día", "días", "dónde", "e", "ejemplo", "el", "ella", "ellas", "ello", "ellos", "embargo", "empleais", "emplean", "emplear", "empleas", "empleo", "en", "encima", "encuentra", "enfrente", "enseguida", "entonces", "entre", "era", "erais", "eramos", "eran", "eras", "eres", "es", "esa", "esas", "ese", "eso", "esos", "esta", "estaba", "estabais", "estaban", "estabas", "estad", "estada", "estadas", "estado", "estados", "estais", "estamos", "estan", "estando", "estar", "estaremos", "estará", "estarán", "estarás", "estaré", "estaréis", "estaría", "estaríais", "estaríamos", "estarían", "estarías", "estas", "este", "estemos", "esto", "estos", "estoy", "estuve", "estuviera", "estuvierais", "estuvieran", "estuvieras", "estuvieron", "estuviese", "estuvieseis", "estuviesen", "estuvieses", "estuvimos", "estuviste", "estuvisteis", "estuviéramos", "estuviésemos", "estuvo", "está", "estábamos", "estáis", "están", "estás", "esté", "estéis", "estén", "estés", "ex", "excepto", "existe", "existen", "explicó", "expresó", "f", "fin", "final", "fue", "fuera", "fuerais", "fueran", "fueras", "fueron", "fuese", "fueseis", "fuesen", "fueses", "fui", "fuimos", "fuiste", "fuisteis", "fuéramos", "fuésemos", "g", "general", "gran", "grandes", "gueno", "h", "ha", "haber", "habia", "habida", "habidas", "habido", "habidos", "habiendo", "habla", "hablan", "habremos", "habrá", "habrán", "habrás", "habré", "habréis", "habría", "habríais", "habríamos", "habrían", "habrías", "habéis", "había", "habíais", "habíamos", "habían", "habías", "hace", "haceis", "hacemos", "hacen", "hacer", "hacerlo", "haces", "hacia", "haciendo", "hago", "han", "has", "hasta", "hay", "haya", "hayamos", "hayan", "hayas", "hayáis", "he", "hecho", "hemos", "hicieron", "hizo", "horas", "hoy", "hube", "hubiera", "hubierais", "hubieran", "hubieras", "hubieron", "hubiese", "hubieseis", "hubiesen", "hubieses", "hubimos", "hubiste", "hubisteis", "hubiéramos", "hubiésemos", "hubo", "i", "igual", "incluso", "indicó", "informo", "informó", "intenta", "intentais", "intentamos", "intentan", "intentar", "intentas", "intento", "ir", "j", "junto", "k", "l", "la", "lado", "largo", "las", "le", "lejos", "les", "llegó", "lleva", "llevar", "lo", "los", "luego", "lugar", "m", "mal", "manera", "manifestó", "mas", "mayor", "me", "mediante", "medio", "mejor", "mencionó", "menos", "menudo", "mi", "mia", "mias", "mientras", "mio", "mios", "mis", "misma", "mismas", "mismo", "mismos", "modo", "momento", "mucha", "muchas", "mucho", "muchos", "muy", "más", "mí", "mía", "mías", "mío", "míos", "n", "nada", "nadie", "ni", "ninguna", "ningunas", "ninguno", "ningunos", "ningún", "no", "nos", "nosotras", "nosotros", "nuestra", "nuestras", "nuestro", "nuestros", "nueva", "nuevas", "nuevo", "nuevos", "nunca", "o", "ocho", "os", "otra", "otras", "otro", "otros", "p", "pais", "para", "parece", "parte", "partir", "pasada", "pasado", "paìs", "peor", "pero", "pesar", "poca", "pocas", "poco", "pocos", "podeis", "podemos", "poder", "podria", "podriais", "podriamos", "podrian", "podrias", "podrá", "podrán", "podría", "podrían", "poner", "por", "por qué", "porque", "posible", "primer", "primera", "primero", "primeros", "principalmente", "pronto", "propia", "propias", "propio", "propios", "proximo", "próximo", "próximos", "pudo", "pueda", "puede", "pueden", "puedo", "pues", "q", "qeu", "que", "quedó", "queremos", "quien", "quienes", "quiere", "quiza", "quizas", "quizá", "quizás", "quién", "quiénes", "qué", "r", "raras", "realizado", "realizar", "realizó", "repente", "respecto", "s", "sabe", "sabeis", "sabemos", "saben", "saber", "sabes", "sal", "salvo", "se", "sea", "seamos", "sean", "seas", "segun", "segunda", "segundo", "según", "seis", "ser", "sera", "seremos", "será", "serán", "serás", "seré", "seréis", "sería", "seríais", "seríamos", "serían", "serías", "seáis", "señaló", "si", "sido", "siempre", "siendo", "siete", "sigue", "siguiente", "sin", "sino", "sobre", "sois", "sola", "solamente", "solas", "solo", "solos", "somos", "son", "soy", "soyos", "su", "supuesto", "sus", "suya", "suyas", "suyo", "suyos", "sé", "sí", "sólo", "t", "tal", "tambien", "también", "tampoco", "tan", "tanto", "tarde", "te", "temprano", "tendremos", "tendrá", "tendrán", "tendrás", "tendré", "tendréis", "tendría", "tendríais", "tendríamos", "tendrían", "tendrías", "tened", "teneis", "tenemos", "tener", "tenga", "tengamos", "tengan", "tengas", "tengo", "tengáis", "tenida", "tenidas", "tenido", "tenidos", "teniendo", "tenéis", "tenía", "teníais", "teníamos", "tenían", "tenías", "tercera", "ti", "tiempo", "tiene", "tienen", "tienes", "toda", "todas", "todavia", "todavía", "todo", "todos", "total", "trabaja", "trabajais", "trabajamos", "trabajan", "trabajar", "trabajas", "trabajo", "tras", "trata", "través", "tres", "tu", "tus", "tuve", "tuviera", "tuvierais", "tuvieran", "tuvieras", "tuvieron", "tuviese", "tuvieseis", "tuviesen", "tuvieses", "tuvimos", "tuviste", "tuvisteis", "tuviéramos", "tuviésemos", "tuvo", "tuya", "tuyas", "tuyo", "tuyos", "tú", "u", "ultimo", "un", "una", "unas", "uno", "unos", "usa", "usais", "usamos", "usan", "usar", "usas", "uso", "usted", "ustedes", "v", "va", "vais", "valor", "vamos", "van", "varias", "varios", "vaya", "veces", "ver", "verdad", "verdadera", "verdadero", "vez", "vosotras", "vosotros", "voy", "vuestra", "vuestras", "vuestro", "vuestros", "w", "x", "y", "ya", "yo", "z", "él", "éramos", "ésa", "ésas", "ése", "ésos", "ésta", "éstas", "éste", "éstos", "última", "últimas", "último", "últimos"];
 
-// Función que permite generar notificaciones locales para dispositivos móviles
-Vue.prototype.$notificar = function () {
-  console.log('Entro en notificar')
-  console.log(localStorage.getItem("presenciales-burgos")
-  )
-  var hoy = new Date()
-  // Hay que recordar que el mes es un número del 0 al 11
-  var dia = hoy.getDate().toString()
-  var mes = ''
-  if (hoy.getMonth() + 1 <= 9) mes = '0' + (hoy.getMonth() + 1)
-  else mes = (hoy.getMonth() + 1).toString()
-  var anio = hoy.getFullYear().toString()
-  var fecha = dia + mes + anio
-  var i = 0
-  if (localStorage.getItem('hoy') !== fecha) {
-    localStorage.setItem('hoy', fecha)
-    var notificaciones = []
-    for (i = 0; i < array.length; i++) {
-      notificaciones.push({id: i, title: 'Actividades CyL Digital', text: 'Abierta la matrícula para el curso ' + array[i].titulo, foreground: true, vibrate: true})
+  // Función que permite generar notificaciones locales para dispositivos móviles
+  Vue.prototype.$notificar = function () {
+    var provTmp=[];
+    console.log('Entro en notificar');
+    var hoy = new Date();
+    // Hay que recordar que el mes es un número del 0 al 11
+    var dia = hoy.getDate().toString();
+    var mes = '';
+    if (hoy.getMonth() + 1 <= 9) mes = '0' + (hoy.getMonth() + 1);
+    else mes = (hoy.getMonth() + 1).toString();
+    var anio = hoy.getFullYear().toString();
+    var fecha = dia + mes + anio;
+    
+    // Si no tenemos las provincias en localStorage, tomamos el valor por defecto
+    if (localStorage.getItem("provincias")) {
+      provTmp = JSON.parse(localStorage.getItem("provincias"));
+    } else {
+      provTmp = this.$provincias;
     }
-    cordova.plugins.notification.local.schedule(notificaciones)
-  } /* else {
-    for (i = 0; i < array.length; i++) {
-      console.log(array[i].titulo + array[i].hora)
-      cordova.plugins.notification.local.schedule({
-        title: 'Evento en Ataulfo Argenta',
-        // trigger: { at: new Date(anio, mes, dia, 9, 30) },
-        text: 'Este es el texto del evento',
-        // smallIcon: 'res://icon.ataulfo.png',
-        foreground: true,
-        vibrate: true
-      })
-    }
-  } */
-}
+
+    // Actividades presenciales
+
+    //if (localStorage.getItem('hoy') !== fecha) {
+    if (true) {
+      localStorage.setItem('hoy', fecha);
+      var notificaciones = [];
+      var idAutoincrement=0;
+      // Recorremos las provincias
+      for (var x in provTmp) {
+        // Si la provincia esta marcada
+        if (provTmp[x].marcado) {
+          // Pasamos el centro sin acentos y en minusculas
+          var centro = this.$eliminarAcentos(provTmp[x].nombre).toLowerCase();
+           // Salvo en localstorage
+          // console.log("presenciales-" + centro);
+          var arrayTmp=JSON.parse(localStorage.getItem("presenciales-" + centro));
+          console.log(JSON.stringify(arrayTmp));
+          //  [{"nombre":"Primeros pasos con el ordenador: ratón y teclado","centro":"Valladolid","descripcion":"Este taller trata de familiarizar al alumno en el uso de las dos principales formas de comunicación con el ordenador: el ratón y el teclado. Esta actividad está compuesta por una parte de explicación de conceptos: para qué sirven cada uno de los botones del ratón, y las distintas partes del teclado; y otra parte puramente práctica, en la que el alumno deberá ejercitar lo aprendido realizando una serie de ejercicios.\nEsta actividad está incluida en el nivel de iniciación del itinerario de Alfabetizadión Digital.","tematica":"Dispositivos e infraestructura","nivel":"Básico","numeroHoras":"10.0","fechaInicio":"2019-02-11","fechaInicioMatriculacion":"2019-01-15","fechaFin":"2019-02-20","fechaFinMatriculacion":"","numeroPlazas":"13","numeroSolicitudes":"17","aviso":"","tagsGenerados":["ordenador","pasos","raton","teclado"],"bolsaDePalabras":["orden","pas","raton","tecl"],"favorito":false},{"n
+          for(var y in arrayTmp){
+            if(arrayTmp[y].fechaInicioMatriculacion==undefined || arrayTmp[y].fechaInicioMatriculacion.trim()==":")
+              continue;
+              //COGE ANTERIORES, esta hecho aposta para probar
+            if(arrayTmp[y].fechaInicioMatriculacion.localeCompare(fecha)<=1){
+              console.log(arrayTmp[y].nombre);
+              console.log(arrayTmp[y].fechaInicioMatriculacion);
+              
+              notificaciones.push({
+                id: idAutoincrement++,
+                title: 'Actividades CyL Digital',
+                text: 'Abierta la matrícula para el curso ' + arrayTmp[y].nombre,
+                foreground: true,
+                vibrate: true
+              });
+
+            }
+          }
+          // Notificaciones Web
+          for(var i in notificaciones){
+            this.$q.notify({
+              // only required parameter is the message:
+              message: notificaciones[i].title+ " - "+notificaciones[i].text,
+              color: 'blue', 
+               icon: 'thumb_up',
+               timeout:1
+            });
+          }
+          
+
+          
+          }
+        }
+      }
+    
+
+
+    /* else {
+       for (i = 0; i < array.length; i++) {
+         console.log(array[i].titulo + array[i].hora)
+         cordova.plugins.notification.local.schedule({
+           title: 'Evento en Ataulfo Argenta',
+           // trigger: { at: new Date(anio, mes, dia, 9, 30) },
+           text: 'Este es el texto del evento',
+           // smallIcon: 'res://icon.ataulfo.png',
+           foreground: true,
+           vibrate: true
+         })
+       }
+     } */
+  }
 };

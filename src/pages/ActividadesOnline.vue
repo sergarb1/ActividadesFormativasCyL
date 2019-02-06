@@ -116,17 +116,18 @@ export default {
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
+
+      // Fin del esperar
+      this.$notificar();
     // Comprobar si hay que actualizar y si se debe hacer, se hace
     if (this.$hayQueActualizar()) {
       this.$actualizarDatos();
-      //Esperar 3s a que se actualice
+      //Esperar 8s a que se actualice
       var start = new Date().getTime();
       var end = start;
-      while (end < start + 3000) {
+      while (end < start + 8000) {
         end = new Date().getTime();
       }
-      // Fin del esperar
-
       // Ponemos fecha de actualizacion y la guardamos localStorage
       this.$ultimaActualizacion = new Date();
       localStorage.setItem(

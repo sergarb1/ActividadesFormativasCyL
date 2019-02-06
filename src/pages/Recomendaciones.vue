@@ -10,7 +10,7 @@
 
       <q-card
         class="q-mb-md"
-        v-for="act in datosCursos"
+        v-for="act in recomCursos"
         :key="act.nombre+act.centro+act.fechaInicio"
       >
         <q-card-title>
@@ -67,44 +67,6 @@
           <q-item-main/>
         </q-card-main>
         <q-card-separator/>
-        <!-- q-card-actions align="between">
-        <div>
-          <q-icon name="event_note"/>&nbsp;&nbsp;
-          <small>
-            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="trending_up"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nivel: {{ act.nivel }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-          <q-icon name="event"/>&nbsp;&nbsp;
-          <small>
-            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="watch_later"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nº horas: {{ act.numeroHoras }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-        </div>
-        <div>
-          <q-icon name="person"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
-          </small>
-        </div>
-        </q-card-actions-->
         <q-card-actions align="between">
           <div>
             <q-icon name="trending_up"/>&nbsp;&nbsp;
@@ -126,11 +88,7 @@
           </div>
         </q-card-actions>
         <q-card-separator/>
-        <!-- q-card-actions align="between">
-        <div>
-          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
-        </div>
-        </q-card-actions-->
+
       </q-card>
     </q-collapsible>
     <!-- fin collapsible cursos -->
@@ -141,7 +99,7 @@
       </q-item-tile>
       <q-alert v-if="this.recomOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
 
-      <q-card class="q-mb-md" v-for="act in datosOnline" :key="act.nombre+act.fechaInicio">
+      <q-card class="q-mb-md" v-for="act in recomOnline" :key="act.nombre+act.fechaInicio">
         <q-card-title>
           {{ act.nombre }}
           <div slot="right" class="row items-center">
@@ -216,11 +174,6 @@
           </div>
         </q-card-actions>
         <q-card-separator/>
-        <!-- q-card-actions align="between">
-        <div>
-          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
-        </div>
-        </q-card-actions-->
       </q-card>
     </q-collapsible>
     <!-- fin collapsible online -->
@@ -378,6 +331,8 @@ export default {
           alcanzados++;
         }
       }
+      // Nos quedamos con las 4 primeras recomendaciones
+      this.recomCursos=this.recomCursos.slice(0,4);
     },
     //Genera recomendaciones de talleres
     recomendacionesOnline() {
@@ -428,6 +383,9 @@ export default {
           alcanzados++;
         }
       }
+
+      // Nos quedamos con las 4 primeras recomendaciones
+      this.recomOnline=this.recomOnline.slice(0,4);
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
