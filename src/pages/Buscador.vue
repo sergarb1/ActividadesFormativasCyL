@@ -4,7 +4,7 @@
     <div class="q-ma-lg">
       <!-- Indico un (m)argen a (all) todas las dimensiones grande (lg) -->
       <q-item-tile label class="q-mb-md">
-        <strong>Buscar evento</strong>
+        <strong>Buscar actividad</strong>
       </q-item-tile>
       <!-- q-input
       float-label="Titulo"
@@ -151,6 +151,7 @@
       float-label="Hora"
       placeholder="Introduzca aquí la hora o rango de horas del evento"
       /-->
+      <br/>
       <q-btn
         color="primary"
         to="/resultadobusqueda"

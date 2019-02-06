@@ -7,7 +7,7 @@
     <q-item-tile label class="q-mb-md">
       <strong>Resultados busqueda</strong>
     </q-item-tile>
-    <q-collapsible icon="school" label="Act. Presenciales">
+    <q-collapsible icon="school" label="Act. Presenciales" opened>
       <q-alert
         v-if="this.actividadesPresenciales.length==0"
         type="info"
@@ -140,7 +140,7 @@
     </q-collapsible>
     <!-- fin collapsible cursos -->
     <!-- Collapsible online -->
-    <q-collapsible icon="cloud" label="Online">
+    <q-collapsible icon="cloud" label="Online" opened>
       <q-item-tile label class="q-mb-md"></q-item-tile>
       <q-alert v-if="this.actividadesOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
 

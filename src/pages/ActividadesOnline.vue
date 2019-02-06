@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex-top q-ma-lg">
     <q-item-tile label class="q-mb-md">
-      <strong>Actividades Online</strong>
+      <strong>Actividades online</strong>
     </q-item-tile>
     <q-alert v-if="this.actividades.length==0" icon="info" color="tertiary">
       No hay actividades de este tipo disponibles.

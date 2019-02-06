@@ -8,7 +8,7 @@
 
         <q-toolbar-title>
             <img src="../assets/sigecyl.png" style="height:30px"/>
-          Castilla y León Digital
+          CyL Digital
           <!--div slot="subtitle">Para todos los públicos</div-->
           <q-btn dense flat size="md" icon="search" label="Buscar" to="/buscador"  class="float-right"/>
         </q-toolbar-title>
@@ -20,7 +20,7 @@
           exact
           slot="title"
           name="actpresenciales"
-          label="Act. presenciales"
+          label="Presenciales"
         />
         <!-- q-route-tab
           icon="school"
@@ -53,15 +53,15 @@
           exact
           slot="title"
           name="actonline"
-          label="Act. online"
+          label="Online"
         />
         <q-route-tab
-          icon="star"
+          icon="favorite"
           to="/favoritos"
           exact
           slot="title"
           name="favoritos"
-          label="Favoritos"
+          label="Favoritas"
         />
         <q-route-tab
           icon="thumb_up"
@@ -83,15 +83,20 @@
 
         <q-item to="/suscripciones">
           <q-item-side icon="edit"/>
-          <q-item-main label="Suscripciones" sublabel="Selección de cursos por provincia"/>
+          <q-item-main label="Suscripciones/Notificaciones" sublabel="Selección de cursos por provincia"/>
         </q-item>
         <!-- q-item to="/buscador">
           <q-item-side icon="search"/>
           <q-item-main label="Buscador" sublabel="Filtra eventos"/>
         </q-item -->
-        <q-item to="/acercade">
+        <q-item to="/ayuda">
           <q-item-side icon="help_outline"/>
-          <q-item-main label="Acerca de" sublabel="Profes redondos"/>
+          <q-item-main label="Ayuda" sublabel="Ayuda sobre la aplicación"/>
+        </q-item>
+      </q-list>
+      <q-item to="/acercade">
+          <q-item-side icon="info"/>
+          <q-item-main label="Acerca de" sublabel="Sobre nosotros"/>
         </q-item>
       </q-list>
     </q-layout-drawer>

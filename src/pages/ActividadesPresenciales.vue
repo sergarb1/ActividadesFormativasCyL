@@ -180,6 +180,7 @@ export default {
 
     // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
     obtieneInformacionCentrosMarcados() {
+      console.log('entro en obtieneinformación...')
       this.actividades = [];
       var provTmp;
 
@@ -207,6 +208,8 @@ export default {
       this.actividades.sort(function(a, b) {
         return a.fechaInicio.localeCompare(b.fechaInicio);
       });
+            console.log('salgo en obtieneinformación...')
+      this.$notificar();
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos

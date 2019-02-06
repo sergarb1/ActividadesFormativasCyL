@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex-top q-ma-lg">
-    <strong>Favoritos</strong>
+    <strong>Actividades favoritas</strong><br/><br/>
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Act. Presenciales">
       <q-item-tile label class="q-mb-md"></q-item-tile>
