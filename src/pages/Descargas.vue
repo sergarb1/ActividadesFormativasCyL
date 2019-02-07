@@ -2,7 +2,7 @@
 <template>
   <div class="fixed-center text-center">
     <p>Descarga esta aplicación para las siguientes plataformas</p>
-    <q-list>
+    <q-list a>
       <q-item>
         <q-btn
           push
