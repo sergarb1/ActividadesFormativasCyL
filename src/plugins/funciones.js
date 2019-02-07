@@ -129,7 +129,7 @@ export default ({
     // Calculamos la diferencia entre horas
     var difHoras = Math.abs(date1 - date2) / (60 * 60 * 1000);
     // Caso que la diferencia de horas sea mayor que 2
-    if (difHoras > 2) {
+    if (difHoras > 16) {
       return true;
     }
     // Caso que la diferencia de horas sea mayor, devolver falso
