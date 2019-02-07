@@ -1,6 +1,8 @@
 <template>
   <q-page class="flex-top q-ma-lg">
-    <strong>Recomendaciones</strong><br/><br/>
+    <strong>Recomendaciones</strong>
+    <br>
+    <br>
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Act. Presenciales">
       <q-item-tile label class="q-mb-md">
@@ -88,7 +90,6 @@
           </div>
         </q-card-actions>
         <q-card-separator/>
-
       </q-card>
     </q-collapsible>
     <!-- fin collapsible cursos -->
@@ -192,22 +193,20 @@ import axios from "axios";
 import sw from "stopword";
 // Importamos para procesamiento del lenguaje natural
 import natural from "natural";
-
+// Para poder usar openURL
+import { openURL } from "quasar";
 export default {
   name: "Index",
   // Definimos las variables en Vue
   data() {
     return {
-      // URL para obtener datos JSON de ValenBisi
-      endpoint:
-        "https://admin.sigecyl.es/servicios/actividades/actividadesPresenciales?tipoActividad=curso",
-      // Array con información de cada uno de las estacione
+      // Arrays con información de actividades, favoritos y finalmente recomendaciones
       actividadesCursos: [],
       actividadesCursosPalabras: [],
       actividadesOnlinePalabras: [],
       datosCursos: [],
       datosOnline: [],
-
+      // Usados para recomendar
       recomCursos: [],
       recomOnline: []
     };
@@ -219,12 +218,17 @@ export default {
   },
   // Metodos accesibles desde Vue
   methods: {
+    // Funcion que recibe un URL y la abre
+    abrirURL(url) {
+      openURL(url);
+    },
     // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
     getEstadoActividades() {
-      // Obtenemos datos presenciales
+      // Vaciamos datos de las actividades disponibles
       this.datosCursos = [];
-      var provTmp;
 
+      // Obtenemos las provincias si no las tenemos
+      var provTmp;
       if (localStorage.getItem("provincias")) {
         provTmp = JSON.parse(localStorage.getItem("provincias"));
       } else {
@@ -233,7 +237,7 @@ export default {
 
       // Recorremos las provincias
       for (var x in provTmp) {
-        // Si la provincia esta marcada
+        // Si la provincia esta marcada, la unimos en un array de datos presenciales
         if (provTmp[x].marcado) {
           var centroTMP = this.$eliminarAcentos(
             provTmp[x].nombre
@@ -249,51 +253,59 @@ export default {
       this.datosOnline = JSON.parse(
         localStorage.getItem("presenciales-online")
       );
-
+      // Vaciamos favoritos y bolsa de palabras generada en base a mis favoritos
       this.actividadesCursos = [];
       this.actividadesCursosPalabras = [];
-      this.actividadesCharlas = [];
-      this.actividadesTalleres = [];
       this.actividadesOnline = [];
+      this.actividadesOnlinePalabras = [];
 
+      // Si estan disponibles los favoritos presenciales
       if (localStorage.getItem("favoritos-presenciales")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-presenciales"));
         for (var x in tmp) {
           this.actividadesCursos.push(tmp[x]);
+          // Cada favorito influye en la creacion de la Bolsa de palabras
           for (var y in tmp[x].bolsaDePalabras)
             this.actividadesCursosPalabras.push(tmp[x].bolsaDePalabras[y]);
         }
       }
 
+      // Si estan disponibles los favoritos online
       if (localStorage.getItem("favoritos-online")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-online"));
         for (var x in tmp) {
           this.actividadesOnline.push(tmp[x]);
+          // Cada favorito influye en la creacion de la Bolsa de palabras
           for (var y in tmp[x].bolsaDePalabras)
             this.actividadesOnlinePalabras.push(tmp[x].bolsaDePalabras[y]);
         }
       }
 
-      // Generamos recomendaciones cursos
+      // Generamos recomendaciones cursos presenciales
       this.recomendacionesCursos();
       this.cargarFavoritosPresenciales("favoritos-presenciales");
-    
+
+      // Generamos recomendaciones cursos online
       this.recomendacionesOnline();
       this.cargarFavoritosOnline("favoritos-online");
     },
     //Genera recomendaciones de cursos
     recomendacionesCursos() {
       this.recomCursos = [];
-
+      // Recorremos los cursos y le damos una puntuacion basada en
+      // coincidencias de palabras con la bolsa de palabras construida
       for (var i in this.datosCursos) {
         this.datosCursos[i].puntosRecomendacion = 0;
         for (var j in this.actividadesCursos) {
+          // Si el curso ya esta en favoritos, no se recomienda (se le da puntuacion -1)
           if (this.datosCursos[i].nombre == this.actividadesCursos[j].nombre) {
             this.datosCursos[i].puntosRecomendacion = -1;
             break;
           }
         }
+        // Si tiene puntuacion 0 (es decir, no esta en favoritos)
         if (this.datosCursos[i].puntosRecomendacion == 0) {
+          // Se compara con la bolsa de palabras y se le da una puntacion
           for (var k in this.datosCursos[i].bolsaDePalabras) {
             for (var j in this.actividadesCursosPalabras) {
               if (
@@ -315,7 +327,7 @@ export default {
         return 0;
       });
 
-      // MEtemos las recomendaciones
+      // Metemos las recomendaciones (Maximo 3)
       var alcanzados = 0;
       for (var i = 0; alcanzados < 3 && i < this.datosCursos.length; i++) {
         var encontrado = false;
@@ -331,22 +343,27 @@ export default {
           alcanzados++;
         }
       }
-      // Nos quedamos con las 4 primeras recomendaciones
-      this.recomCursos=this.recomCursos.slice(0,4);
+      // Nos quedamos con las 3 primeras recomendaciones
+      this.recomCursos = this.recomCursos.slice(0, 3);
     },
     //Genera recomendaciones de talleres
     recomendacionesOnline() {
       this.recomOnline = [];
 
+      // Recorremos los cursos y le damos una puntuacion basada en
+      // coincidencias de palabras con la bolsa de palabras construida
       for (var i in this.datosOnline) {
         this.datosOnline[i].puntosRecomendacion = 0;
+        // Si el curso ya esta en favoritos, no se recomienda (se le da puntuacion -1)
         for (var j in this.actividadesOnline) {
           if (this.datosOnline[i].nombre == this.actividadesOnline[j].nombre) {
             this.datosOnline[i].puntosRecomendacion = -1;
             break;
           }
         }
+        // Si tiene puntuacion 0 (es decir, no esta en favoritos)
         if (this.datosOnline[i].puntosRecomendacion == 0) {
+          // Se le da una puntuacion comparandol con la bolsa de palabras
           for (var k in this.datosOnline[i].bolsaDePalabras) {
             for (var j in this.actividadesOnlinePalabras) {
               if (
@@ -367,7 +384,7 @@ export default {
         return 0;
       });
 
-      // MEtemos las recomendaciones
+      // Metemos las recomendaciones
       var alcanzados = 0;
       for (var i = 0; alcanzados < 3 && i < this.datosOnline.length; i++) {
         var encontrado = false;
@@ -384,8 +401,8 @@ export default {
         }
       }
 
-      // Nos quedamos con las 4 primeras recomendaciones
-      this.recomOnline=this.recomOnline.slice(0,4);
+      // Nos quedamos con las 3 primeras recomendaciones
+      this.recomOnline = this.recomOnline.slice(0, 3);
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
@@ -424,8 +441,7 @@ export default {
           }
         }
       }
-    },
-    
+    }
   }
 };
 </script>

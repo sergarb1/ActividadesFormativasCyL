@@ -1,6 +1,8 @@
 <template>
   <q-page class="flex-top q-ma-lg">
-    <strong>Actividades favoritas</strong><br/><br/>
+    <strong>Actividades favoritas</strong>
+    <br>
+    <br>
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Act. Presenciales">
       <q-item-tile label class="q-mb-md"></q-item-tile>
@@ -65,44 +67,7 @@
           <q-item-main/>
         </q-card-main>
         <q-card-separator/>
-        <!-- q-card-actions align="between">
-        <div>
-          <q-icon name="event_note"/>&nbsp;&nbsp;
-          <small>
-            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="trending_up"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nivel: {{ act.nivel }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-          <q-icon name="event"/>&nbsp;&nbsp;
-          <small>
-            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="watch_later"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nº horas: {{ act.numeroHoras }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-        </div>
-        <div>
-          <q-icon name="person"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
-          </small>
-        </div>
-        </q-card-actions-->
+
         <q-card-actions align="between">
           <div>
             <q-icon name="trending_up"/>&nbsp;&nbsp;
@@ -124,11 +89,6 @@
           </div>
         </q-card-actions>
         <q-card-separator/>
-        <!-- q-card-actions align="between">
-        <div>
-          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
-        </div>
-        </q-card-actions-->
       </q-card>
     </q-collapsible>
     <!-- fin collapsible cursos -->
@@ -229,6 +189,8 @@
 
 <!-- Aqui script, donde irá el Javascript (métodos, funciones, etc) -->
 <script>
+// Para poder usar openUrl
+import { openURL } from "quasar";
 export default {
   name: "Index",
   // Definimos las variables en Vue
@@ -245,12 +207,16 @@ export default {
     this.getEstadoActividades();
   },
   // Metodos accesibles desde Vue
-  methods: {
+  methods: {   
+    // Funcion que recibe un URL y la abre
+    abrirURL(url) {
+      openURL(url);
+    },
     // Funcion que mediante axios, obtiene el estado del ValenBisi y rellena el array Estaciones
     getEstadoActividades() {
       this.actividadesCursos = [];
       this.actividadesOnline = [];
-
+      // Obtenemos todos los favoritos presenciales
       if (localStorage.getItem("favoritos-presenciales")) {
         var tmp = JSON.parse(localStorage.getItem("favoritos-presenciales"));
         for (var x in tmp) {

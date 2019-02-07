@@ -7,14 +7,22 @@
         </q-btn>
 
         <q-toolbar-title>
-            <img src="../assets/sigecyl.png" style="height:30px"/>
+          <img src="../assets/sigecyl.png" style="height:30px">
           CyL Digital
           <!--div slot="subtitle">Para todos los públicos</div-->
-          <q-btn dense flat size="md" icon="search" label="Buscar" to="/buscador"  class="float-right"/>
+          <q-btn
+            dense
+            flat
+            size="md"
+            icon="search"
+            label="Buscar"
+            to="/buscador"
+            class="float-right"
+          />
         </q-toolbar-title>
       </q-toolbar>
       <q-tabs color="primary">
-         <q-route-tab
+        <q-route-tab
           icon="school"
           to="/actpresenciales"
           exact
@@ -22,31 +30,7 @@
           name="actpresenciales"
           label="Presenciales"
         />
-        <!-- q-route-tab
-          icon="school"
-          to="/actprescursos"
-          exact
-          slot="title"
-          name="actprescursos"
-          label="Cursos"
-        />
-       <q-route-tab
-          icon="mode_comment"
-          to="/actprescharlas"
-          exact
-          slot="title"
-          name="actprescharlas"
-          label="Charlas"
-        />
 
-        <q-route-tab
-          icon="extension"
-          to="/actprestalleres"
-          exact
-          slot="title"
-          name="actprestalleres"
-          label="Talleres"
-        / -->
         <q-route-tab
           icon="cloud"
           to="/actonline"
@@ -83,18 +67,21 @@
 
         <q-item to="/suscripciones">
           <q-item-side icon="edit"/>
-          <q-item-main label="Suscripciones/Notificaciones" sublabel="Selección de cursos por provincia"/>
+          <q-item-main
+            label="Suscripciones/Notificaciones"
+            sublabel="Selección de cursos por provincia"
+          />
         </q-item>
-        <!-- q-item to="/buscador">
-          <q-item-side icon="search"/>
-          <q-item-main label="Buscador" sublabel="Filtra eventos"/>
-        </q-item -->
+        
+        <q-item to="/descargas">
+          <q-item-side icon="cloud_download"/>
+          <q-item-main label="Descargas" sublabel="Descarga esta aplicación para Android y PC"/>
+        </q-item>
         <q-item to="/ayuda">
           <q-item-side icon="help_outline"/>
           <q-item-main label="Ayuda" sublabel="Ayuda sobre la aplicación"/>
         </q-item>
-      </q-list>
-      <q-item to="/acercade">
+        <q-item to="/acercade">
           <q-item-side icon="info"/>
           <q-item-main label="Acerca de" sublabel="Sobre nosotros"/>
         </q-item>
@@ -108,6 +95,7 @@
 </template>
 
 <script>
+// Para poder usar openURL
 import { openURL } from "quasar";
 
 export default {
@@ -117,8 +105,11 @@ export default {
       leftDrawerOpen: this.$q.platform.is.desktop
     };
   },
-  methods: {
-    openURL
+  methods: {  
+    // Funcion que recibe un URL y la abre
+    abrirURL(url) {
+      openURL(url);
+    },
   }
 };
 </script>

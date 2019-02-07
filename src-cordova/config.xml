@@ -34,6 +34,6 @@
         <splash density="port-xhdpi" src="res/screen/android/screen-xhdpi-portrait.png" />
     </platform>
     <preference name="SplashScreenDelay" value="10000" />
+    <engine name="android" spec="^7.1.4" />
     <engine name="ios" spec="^4.5.5" />
-    <engine name="android" spec="~7.1.4" />
 </widget>

@@ -139,19 +139,8 @@
         type="date"
         float-label="Fecha de inicio posterior a"
       />
-      <!--
-        <q-datetime
-        v-model="filtro.fechaFin"
-        @input="guardar()"
-        type="date"
-        float-label="Fecha de fin anterior a"
-      />-->
-      <!-- q-input
-      v-model="form.hora"
-      float-label="Hora"
-      placeholder="Introduzca aquí la hora o rango de horas del evento"
-      /-->
-      <br/>
+
+      <br>
       <q-btn
         color="primary"
         to="/resultadobusqueda"
@@ -228,80 +217,85 @@ export default {
     this.recuperarFiltro();
   },
   methods: {
+    // Guardamos el estado de los filtros
     guardar() {
-      // Movemos el "Todas" de provincias
+      // Codigo que mueve el "Todas" de provincias
       this.provinciasEstadoTodas = true;
       for (var i in this.provincias) {
         if (this.provincias[i].marcado == false)
           this.provinciasEstadoTodas = false;
       }
-      // Movemos el "Todas" de tematicas
+      // Codigo que mueve el "Todas" de tematicas
       this.tematicasEstadoTodas = true;
       for (var i in this.tematicas) {
         if (this.tematicas[i].marcado == false)
           this.tematicasEstadoTodas = false;
       }
-
-      // Movemos el "Todas" de niveles
+      // Codigo que mueve el "Todas" de niveles
       this.nivelesEstadoTodas = true;
       for (var i in this.niveles) {
-        if (this.niveles[i].marcado == false)
-          this.nivelesEstadoTodas = false;
+        if (this.niveles[i].marcado == false) this.nivelesEstadoTodas = false;
       }
 
-      // Guardamos los filtros
+      // Guardamos los filtros (Provincias)
       this.filtro.provincias = [];
       for (var i in this.provincias) {
         if (this.provincias[i].marcado) {
           this.filtro.provincias.push(this.provincias[i].nombre);
         }
       }
+      // Guardamos los filtros (Tematicas)
       this.filtro.tematicas = [];
       for (var i in this.tematicas) {
         if (this.tematicas[i].marcado) {
           this.filtro.tematicas.push(this.tematicas[i].nombre);
         }
       }
+      // Guardamos los filtros (Niveles)
       this.filtro.niveles = [];
       for (var i in this.niveles) {
         if (this.niveles[i].marcado) {
           this.filtro.niveles.push(this.niveles[i].nombre);
         }
       }
+      // Almacenamos los filtros leidos en el apartado "filtros"
+      // de LocalStorage
       localStorage.setItem("filtro", JSON.stringify(this.filtro));
     },
     // Funcion que recupera los filtros
-    recuperarFiltro(){
-      if(localStorage.getItem('filtro')){
-        this.filtro=JSON.parse(localStorage.getItem('filtro'));
+    recuperarFiltro() {
+      // Si existe el filtro en LocalStorage, lo carga
+      if (localStorage.getItem("filtro")) {
+        this.filtro = JSON.parse(localStorage.getItem("filtro"));
 
-        // Cargamos parte de los filtros
+        // Cargamos parte de los filtros (Provincias)
         for (var i in this.filtro.provincias) {
-          for(var j in this.provincias){
-            if(this.filtro.provincias[i]==this.provincias[j].nombre){
-                this.provincias[j].marcado=true;
+          for (var j in this.provincias) {
+            if (this.filtro.provincias[i] == this.provincias[j].nombre) {
+              this.provincias[j].marcado = true;
             }
           }
         }
-for (var i in this.filtro.tematicas) {
-          for(var j in this.tematicas){
-            if(this.filtro.tematicas[i]==this.tematicas[j].nombre){
-                this.tematicas[j].marcado=true;
+        // Cargamos parte de los filtros (Tematicas)
+        for (var i in this.filtro.tematicas) {
+          for (var j in this.tematicas) {
+            if (this.filtro.tematicas[i] == this.tematicas[j].nombre) {
+              this.tematicas[j].marcado = true;
             }
           }
         }
+        // Cargamos parte de los filtros (Niveles)
         for (var i in this.filtro.niveles) {
-          for(var j in this.niveles){
-            if(this.filtro.niveles[i]==this.niveles[j].nombre){
-                this.niveles[j].marcado=true;
+          for (var j in this.niveles) {
+            if (this.filtro.niveles[i] == this.niveles[j].nombre) {
+              this.niveles[j].marcado = true;
             }
           }
         }
 
-        // Guardamos para recargar
+        // Guardamos los cambios y asi tambien recargamos
         this.guardar();
       }
-      
     },
 
     // Funcion que marca/desmarca todas las provincias

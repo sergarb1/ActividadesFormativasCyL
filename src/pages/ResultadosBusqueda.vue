@@ -72,44 +72,6 @@
           <q-item-main/>
         </q-card-main>
         <q-card-separator/>
-        <!-- q-card-actions align="between">
-        <div>
-          <q-icon name="event_note"/>&nbsp;&nbsp;
-          <small>
-            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="trending_up"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nivel: {{ act.nivel }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-          <q-icon name="event"/>&nbsp;&nbsp;
-          <small>
-            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="watch_later"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nº horas: {{ act.numeroHoras }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-        </div>
-        <div>
-          <q-icon name="person"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
-          </small>
-        </div>
-        </q-card-actions-->
         <q-card-actions align="between">
           <div>
             <q-icon name="trending_up"/>&nbsp;&nbsp;
@@ -291,8 +253,8 @@ export default {
       this.actividadesOnline = [];
 
       this.actividades = [];
+      // Obtenemos las provincias de LocalStorage
       var provTmp;
-
       if (localStorage.getItem("provincias")) {
         provTmp = JSON.parse(localStorage.getItem("provincias"));
       } else {
@@ -301,22 +263,19 @@ export default {
 
       // Recorremos las provincias
       for (var x in provTmp) {
-        // Si la provincia esta marcada
-        if (provTmp[x].marcado) {
-          var centroTMP = this.$eliminarAcentos(
-            provTmp[x].nombre
-          ).toLowerCase();
-          this.actividadesPresenciales = this.$unirArrays(
-            this.actividadesPresenciales,
-            JSON.parse(localStorage.getItem("presenciales-" + centroTMP))
-          );
-        }
+        // Procesamos la cadena para eliminar acentos y pasarla a mayuscula
+        var centroTMP = this.$eliminarAcentos(provTmp[x].nombre).toLowerCase();
+
+        this.actividadesPresenciales = this.$unirArrays(
+          this.actividadesPresenciales,
+          JSON.parse(localStorage.getItem("presenciales-" + centroTMP))
+        );
       }
       // Ordeno array actividades presenciales
       this.actividadesPresenciales.sort(function(a, b) {
         return a.fechaInicio.localeCompare(b.fechaInicio);
       });
-
+      // Cargo el array del online
       if (localStorage.getItem("presenciales-online")) {
         var tmp = JSON.parse(localStorage.getItem("presenciales-online"));
         for (var x in tmp) {
@@ -515,15 +474,8 @@ export default {
 
       for (var i in this.actividadesPresenciales) {
         encontrado = false;
-        console.log(i);
         for (var j in this.actividadesPresenciales[i].bolsaDePalabras) {
           for (var k in arrayMineria) {
-            console.log(
-              "comparo " +
-                arrayMineria[k] +
-                " con " +
-                this.actividadesPresenciales[i].bolsaDePalabras[j]
-            );
             if (
               arrayMineria[k] ==
               this.actividadesPresenciales[i].bolsaDePalabras[j]
@@ -591,7 +543,7 @@ export default {
     cargarFavoritosOnline(idLocalStorage) {
       if (localStorage.getItem(idLocalStorage)) {
         var fav = JSON.parse(localStorage.getItem(idLocalStorage));
-        // Rellenamos los favoritos
+        // Recorremos datos y favoritos y marcamos el valor de favoritos
         for (var x in fav) {
           for (var y in this.actividadesOnline) {
             if (

@@ -83,11 +83,6 @@
         </div>
       </q-card-actions>
       <q-card-separator/>
-      <!-- q-card-actions align="between">
-        <div>
-          <q-chip v-for="miTag in act.tagsGenerados" :key="miTag" color="tertiary" small>{{ miTag }}</q-chip>
-        </div>
-      </q-card-actions-->
     </q-card>
   </q-page>
 </template>
@@ -104,6 +99,8 @@ import axios from "axios";
 import sw from "stopword";
 // Importamos para procesamiento del lenguaje natural
 import natural from "natural";
+// Para poder usar openUrl
+import { openURL } from "quasar";
 
 export default {
   name: "Index",
@@ -116,53 +113,58 @@ export default {
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
-
-      // Fin del esperar
-      this.$notificar();
     // Comprobar si hay que actualizar y si se debe hacer, se hace
     if (this.$hayQueActualizar()) {
+      // Actualizamos
       this.$actualizarDatos();
-      //Esperar 8s a que se actualice
-      var start = new Date().getTime();
-      var end = start;
-      while (end < start + 8000) {
-        end = new Date().getTime();
-      }
+      // Esperamos 8 segundos
+      this.$esperar(8000);
+
       // Ponemos fecha de actualizacion y la guardamos localStorage
       this.$ultimaActualizacion = new Date();
       localStorage.setItem(
         "ultimaActualizacion",
         JSON.stringify(this.$ultimaActualizacion.toISOString())
       );
+    } // Si no hay que actualizar, entonces notificamos
+    else {
+      // Notificamos tanto escritorio como movil (si procede)
+      this.$notificar();
     }
     // Obtenemos la informacion de los centros marcados
     this.obtieneInformacionCentrosMarcados();
+    // Obtenemos los favoritos de los elementos mostrados y lo actualizamos
     this.cargarFavoritos("favoritos-online");
   },
   // Metodos accesibles desde Vue
   methods: {
+    // Funcion que recibe un URL y la abre
     abrirURL(url) {
       openURL(url);
     },
 
     // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
     obtieneInformacionCentrosMarcados() {
+      // Obtengo del LocalStorage la información cargada de las actividades online
       this.actividades = JSON.parse(
         localStorage.getItem("presenciales-online")
       );
-      // Ordeno array actividades online
+      // Ordeno array actividades online por fecha de inicio
       this.actividades.sort(function(a, b) {
         return a.fechaInicio.localeCompare(b.fechaInicio);
       });
     },
-    // Función que carga del localStorage un texto en formato JSON
-    // con los favoritos de cursos
+
+    // Función que carga del LocalStorage un texto en formato JSON
+    // con los favoritos de cursos y rellena los cursos cargados
     cargarFavoritos(idLocalStorage) {
+      // Si el favorito esta disponible, lo cargamos
       if (localStorage.getItem(idLocalStorage)) {
         var fav = JSON.parse(localStorage.getItem(idLocalStorage));
-        // Rellenamos los favoritos
+        // Recorremos los favoritos y las activiades
         for (var x in fav) {
           for (var y in this.actividades) {
+            // Si coinciden las actividades, se marca como favorito
             if (
               fav[x].nombre == this.actividades[y].nombre &&
               fav[x].centro == this.actividades[y].centro &&

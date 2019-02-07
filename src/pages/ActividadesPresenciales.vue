@@ -63,44 +63,7 @@
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
-      <!-- q-card-actions align="between">
-        <div>
-          <q-icon name="event_note"/>&nbsp;&nbsp;
-          <small>
-            <strong>Matrícula: {{ $parsearFecha(act.fechaInicioMatriculacion) }} - {{ $parsearFecha(act.fechaFinMatriculacion) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="trending_up"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nivel: {{ act.nivel }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-          <q-icon name="event"/>&nbsp;&nbsp;
-          <small>
-            <strong>Fechas: {{ $parsearFecha(act.fechaInicio) }} - {{ $parsearFecha(act.fechaFin) }}</strong>
-          </small>
-        </div>
-        <div>
-          <q-icon name="watch_later"/>&nbsp;&nbsp;
-          <small>
-            <strong>Nº horas: {{ act.numeroHoras }}</strong>
-          </small>
-        </div>
-      </q-card-actions>
-      <q-card-actions align="between">
-        <div>
-        </div>
-        <div>
-          <q-icon name="person"/>&nbsp;&nbsp;
-          <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes /  {{ act.numeroPlazas }} plazas</strong>
-          </small>
-        </div>
-      </q-card-actions-->
+
       <q-card-actions align="between">
         <div>
           <q-icon name="trending_up"/>&nbsp;&nbsp;
@@ -137,6 +100,7 @@
 
 <!-- Aqui script, donde irá el Javascript (métodos, funciones, etc) -->
 <script>
+// Para poder abrir url con openURL
 import { openURL } from "quasar";
 
 export default {
@@ -152,14 +116,11 @@ export default {
   mounted() {
     // Comprobar si hay que actualizar y si se debe hacer, se hace
     if (this.$hayQueActualizar()) {
+      //Actualizamos los datos
       this.$actualizarDatos();
-      //Esperar 8s a que se actualice
-      var start = new Date().getTime();
-      var end = start;
-      while (end < start + 8000) {
-        end = new Date().getTime();
-      }
-      // Fin del esperar
+
+      // Esperamos 8 segundos
+      this.$esperar(8000);
 
       // Ponemos fecha de actualizacion y la guardamos localStorage
       this.$ultimaActualizacion = new Date();
@@ -167,7 +128,12 @@ export default {
         "ultimaActualizacion",
         JSON.stringify(this.$ultimaActualizacion.toISOString())
       );
+    } // Si no hay que actualizar, entonces notificamos
+    else {
+      // Notificamos tanto escritorio como movil (si procede)
+      this.$notificar();
     }
+
     // Obtenemos la informacion de los centros marcados
     this.obtieneInformacionCentrosMarcados();
     this.cargarFavoritos("favoritos-presenciales");
@@ -180,10 +146,10 @@ export default {
 
     // Funcion que obtiene de LocalStorage los centros y los anyade a la consulta
     obtieneInformacionCentrosMarcados() {
-      console.log('entro en obtieneinformación...')
+      // vaciamos las activiades
       this.actividades = [];
+      // Obtenemos inforacion de las provincias
       var provTmp;
-
       if (localStorage.getItem("provincias")) {
         provTmp = JSON.parse(localStorage.getItem("provincias"));
       } else {
@@ -194,9 +160,12 @@ export default {
       for (var x in provTmp) {
         // Si la provincia esta marcada
         if (provTmp[x].marcado) {
+          // Adaptamos el nombre del centro al formato establecido
           var centroTMP = this.$eliminarAcentos(
             provTmp[x].nombre
           ).toLowerCase();
+          // Obtenemos de LocalStorage actividade de los  distintos centros y los
+          // vamos uniendo en un array
           this.actividades = this.$unirArrays(
             this.actividades,
             JSON.parse(localStorage.getItem("presenciales-" + centroTMP))
@@ -208,15 +177,14 @@ export default {
       this.actividades.sort(function(a, b) {
         return a.fechaInicio.localeCompare(b.fechaInicio);
       });
-            console.log('salgo en obtieneinformación...')
-      this.$notificar();
     },
     // Función que carga del localStorage un texto en formato JSON
     // con los favoritos de cursos
     cargarFavoritos(idLocalStorage) {
       if (localStorage.getItem(idLocalStorage)) {
         var fav = JSON.parse(localStorage.getItem(idLocalStorage));
-        // Rellenamos los favoritos
+        // Recorremos favoritos y actividades
+        // Marcamos aquellos que coinciden como favoritos
         for (var x in fav) {
           for (var y in this.actividades) {
             if (
