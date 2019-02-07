@@ -1,40 +1,41 @@
 <!-- Aqui template, donde ira el HTML que Vue renderizara -->
 <template>
-  <div class="fixed-center text-center">
-    <p>Descarga esta aplicación para las siguientes plataformas</p>
-    <q-list a>
-      <q-item>
-        <q-btn
+    <q-card class="q-mb-md" >
+      <q-card-title>
+        Descarga esta aplicación para las siguientes plataformas
+      </q-card-title>
+      <q-card-main>
+  
+        <p><q-btn
           push
           rounded
           size="sm"
           color="secondary"
-          icon-right="android_phone"
+          icon="android"
           label="Descargar para Android"
-        />
-      </q-item>
-      <q-item>
-        <q-btn
+        /></p>
+        <p><q-btn
           push
           rounded
           size="sm"
           color="secondary"
-          icon-right="computer"
+          icon="computer"
           label="Descargar para PC Windows"
-        />
-      </q-item>
-      <q-item>
+        /></p>
+        <p>
+
         <q-btn
           push
           rounded
           size="sm"
           color="secondary"
-          icon-right="computer"
+          icon="computer"
           label="Descargar para PC Linux"
         />
-      </q-item>
-    </q-list>
-  </div>
+        </p>
+      </q-card-main>
+      <q-card-separator/>
+    </q-card>
 </template>
 <!-- Aqui script, donde irá el Javascript (métodos, funciones, etc) -->
 <script>

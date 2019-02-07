@@ -102,6 +102,8 @@
 <script>
 // Para poder abrir url con openURL
 import { openURL } from "quasar";
+// Para la pantalla de carga
+import { Loading, QSpinnerGears } from "quasar";
 
 export default {
   name: "Index",
@@ -119,25 +121,51 @@ export default {
       //Actualizamos los datos
       this.$actualizarDatos();
 
-      // Esperamos 8 segundos
-      this.$esperar(8000);
+      Loading.show({
+              spinner: QSpinnerGears,
+              message: 'Carga inicial de Actividades, espere...',
+              messageColor: 'blue',
+              spinnerSize: 250, // in pixels
+              spinnerColor: 'white',
+              customClass : 'bg-primary'
+      });
 
+    // Timeout para que a los 10 segundos cargue
+    setTimeout( function(){
+      this.obtieneInformacionCentrosMarcados();
+      this.cargarFavoritos("favoritos-presenciales");
+      Loading.hide();      
       // Ponemos fecha de actualizacion y la guardamos localStorage
       this.$ultimaActualizacion = new Date();
       localStorage.setItem(
         "ultimaActualizacion",
         JSON.stringify(this.$ultimaActualizacion.toISOString())
       );
-    } // Si no hay que actualizar, entonces notificamos
+    }.bind(this),10000);
+    
+    // Timeout para que a los 16 segundos re-intente
+    setTimeout( function(){
+      this.obtieneInformacionCentrosMarcados();
+      this.cargarFavoritos("favoritos-presenciales");
+      Loading.hide(); 
+      this.$notificar();
+    }.bind(this),16000);
+    
+
+
+    } // Si no hay que actualizar, entonces cargamos y notificamos
     else {
+      
+      this.obtieneInformacionCentrosMarcados();
+      this.cargarFavoritos("favoritos-presenciales");
       // Notificamos tanto escritorio como movil (si procede)
       this.$notificar();
     }
 
-    // Obtenemos la informacion de los centros marcados
-    this.obtieneInformacionCentrosMarcados();
-    this.cargarFavoritos("favoritos-presenciales");
+   
+
   },
+
   // Metodos accesibles desde Vue
   methods: {
     abrirURL(url) {

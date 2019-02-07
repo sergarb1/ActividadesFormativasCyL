@@ -295,6 +295,9 @@ export default ({
     // Construimos la fecha actual en formato 2019-02-30
     // Hay que recordar que el mes es un número del 0 al 11
     var dia = hoy.getDate().toString();
+    if( parseInt(dia)<10){
+      dia="0"+dia;
+    }
     var mes = '';
     if (hoy.getMonth() + 1 <= 9)
       mes = '0' + (hoy.getMonth() + 1);

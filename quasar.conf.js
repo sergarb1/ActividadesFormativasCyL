@@ -68,7 +68,8 @@ module.exports = function (ctx) {
         'QChip',
         'QInput',
         'QSelect',
-        'QDatetime'
+        'QDatetime',
+        'QSpinnerGears'
 
       ],
       directives: [
@@ -76,7 +77,8 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Loading'
       ]
       // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
       // i18n: 'de' // Quasar language

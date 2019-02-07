@@ -101,6 +101,8 @@ import sw from "stopword";
 import natural from "natural";
 // Para poder usar openUrl
 import { openURL } from "quasar";
+// Para la pantalla de carga
+import { Loading, QSpinnerGears } from "quasar";
 
 export default {
   name: "Index",
@@ -115,26 +117,51 @@ export default {
   mounted() {
     // Comprobar si hay que actualizar y si se debe hacer, se hace
     if (this.$hayQueActualizar()) {
-      // Actualizamos
+      //Actualizamos los datos
       this.$actualizarDatos();
-      // Esperamos 8 segundos
-      this.$esperar(8000);
 
-      // Ponemos fecha de actualizacion y la guardamos localStorage
-      this.$ultimaActualizacion = new Date();
-      localStorage.setItem(
-        "ultimaActualizacion",
-        JSON.stringify(this.$ultimaActualizacion.toISOString())
+      Loading.show({
+        spinner: QSpinnerGears,
+        message: "Carga inicial de Actividades, espere...",
+        messageColor: "blue",
+        spinnerSize: 250, // in pixels
+        spinnerColor: "white",
+        customClass: "bg-primary"
+      });
+
+      // Timeout para que a los 10 segundos cargue
+      setTimeout(
+        function() {
+          this.obtieneInformacionCentrosMarcados();
+          this.cargarFavoritos("favoritos-presenciales");
+          Loading.hide();
+          // Ponemos fecha de actualizacion y la guardamos localStorage
+          this.$ultimaActualizacion = new Date();
+          localStorage.setItem(
+            "ultimaActualizacion",
+            JSON.stringify(this.$ultimaActualizacion.toISOString())
+          );
+        }.bind(this),
+        10000
       );
-    } // Si no hay que actualizar, entonces notificamos
+
+      // Timeout para que a los 16 segundos re-intente
+      setTimeout(
+        function() {
+          this.obtieneInformacionCentrosMarcados();
+          this.cargarFavoritos("favoritos-online");
+          Loading.hide();
+          this.$notificar();
+        }.bind(this),
+        16000
+      );
+    } // Si no hay que actualizar, entonces cargamos y notificamos
     else {
+      this.obtieneInformacionCentrosMarcados();
+      this.cargarFavoritos("favoritos-online");
       // Notificamos tanto escritorio como movil (si procede)
       this.$notificar();
     }
-    // Obtenemos la informacion de los centros marcados
-    this.obtieneInformacionCentrosMarcados();
-    // Obtenemos los favoritos de los elementos mostrados y lo actualizamos
-    this.cargarFavoritos("favoritos-online");
   },
   // Metodos accesibles desde Vue
   methods: {
