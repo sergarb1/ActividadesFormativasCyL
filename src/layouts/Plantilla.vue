@@ -68,7 +68,7 @@
         <q-item to="/suscripciones">
           <q-item-side icon="edit"/>
           <q-item-main
-            label="Suscripciones/Notificaciones"
+            label="Suscripciones"
             sublabel="Selección de cursos por provincia"
           />
         </q-item>

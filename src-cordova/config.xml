@@ -22,7 +22,7 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.2" />
-    <icon density="mdpi" height="57" src="res/icon/sigecyl.png" width="57" />
+    <icon density="mdpi" height="57" src="res/icons/sigecyl.png" width="57" />
     <platform name="android">
         <splash density="land-hdpi" src="res/screen/android/screen-hdpi-landscape.png" />
         <splash density="land-ldpi" src="res/screen/android/screen-ldpi-landscape.png" />
