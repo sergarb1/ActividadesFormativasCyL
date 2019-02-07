@@ -453,9 +453,10 @@ export default {
         return;
       }
       // Proceso la busqueda
-      var textoMineria = this.$soloMinusculasYEspacios(
-        this.filtro.busqueda.trim()
-      );
+      // Eliminamos acentos, pasamos a minusculas y finalmente solo dejamos
+      // minusculas y espacios (un espacio maximo)
+      var textoMineria = this.$eliminarAcentos(this.filtro.busqueda.trim()).toLowerCase();
+      textoMineria = this.$soloMinusculasYEspacios(textoMineria);
       var arrayMineria = [];
       // Eliminamos stop word generales mas algunas que ponemos custom
       var arrayTags = sw.removeStopwords(textoMineria.split(" "), sw.es);
