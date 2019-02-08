@@ -25,7 +25,6 @@
         <br>
         <small>Round Teachers Software</small>
       </p>
-    </div>
   </q-page>
 </template>
 <!-- Aqui script, donde irá el Javascript (métodos, funciones, etc) -->
