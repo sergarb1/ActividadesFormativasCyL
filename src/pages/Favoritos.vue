@@ -6,7 +6,9 @@
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Act. Presenciales">
       <q-item-tile label class="q-mb-md"></q-item-tile>
-      <q-alert v-if="this.actividadesCursos.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.actividadesCursos.length==0" icon="info" color="tertiary">
+      No hay actividades de este tipo marcadas como favoritas.
+      </q-alert>
 
       <q-card
         class="q-mb-md"
@@ -70,21 +72,21 @@
 
         <q-card-actions align="between">
           <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
+            <q-icon name="trending_up"/>
             <small>
               <strong>{{ act.nivel }}</strong>
             </small>
           </div>
           <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
+            <q-icon name="watch_later"/>
             <small>
               <strong>{{ act.numeroHoras }} h</strong>
             </small>
           </div>
           <div>
-            <q-icon name="person"/>&nbsp;&nbsp;
+            <q-icon name="person"/>
             <small>
-              <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
+              <strong>{{ act.numeroSolicitudes }} solicitudes/{{ act.numeroPlazas }} plazas</strong>
             </small>
           </div>
         </q-card-actions>
@@ -95,7 +97,8 @@
     <!-- Collapsible online -->
     <q-collapsible icon="cloud" label="Online">
       <q-item-tile label class="q-mb-md"></q-item-tile>
-      <q-alert v-if="this.actividadesOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.actividadesOnline.length==0" icon="info" color="tertiary">
+      No hay actividades de este tipo marcadas como favoritas.</q-alert>
 
       <q-card class="q-mb-md" v-for="act in actividadesOnline" :key="act.nombre+act.fechaInicio">
         <q-card-title>
@@ -159,15 +162,15 @@
         <q-card-separator/>
         <q-card-actions align="between">
           <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
+            <q-icon name="watch_later"/>
             <small>
               <strong>{{ act.numeroHoras }} h</strong>
             </small>
           </div>
           <div>
-            <q-icon name="person"/>&nbsp;&nbsp;
+            <q-icon name="person"/>
             <small>
-              <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
+              <strong>{{ act.numeroSolicitudes }} solicitudes/{{ act.numeroPlazas }} plazas</strong>
             </small>
           </div>
         </q-card-actions>

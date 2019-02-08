@@ -5,10 +5,11 @@
     <br>
     <!-- Collapsible Cursos -->
     <q-collapsible icon="school" label="Act. Presenciales">
-      <q-item-tile label class="q-mb-md">
-        <strong>Recomendaciones</strong>
-      </q-item-tile>
-      <q-alert v-if="this.recomCursos.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.recomCursos.length==0" icon="info" color="tertiary">
+      No hay actividades de este tipo disponibles.
+      Comprueba en el menú Suscripciones las provincias que deseas mostrar.
+    </q-alert>
+
 
       <q-card
         class="q-mb-md"
@@ -25,10 +26,12 @@
               @input="$guardarFavoritos(datosCursos,'favoritos-presenciales');  if(act.favorito)$q.notify({message: 'Agregado a favoritos: '+act.nombre,timeout: 1000, type: 'positive', position: 'center'});"
             />
           </div>
-          <div slot="subtitle">
-            <q-icon name="room" size="16px"/>&nbsp;
-            <small>{{act.centro}}</small>
-          </div>
+        <div slot="subtitle">
+          <q-icon name="room" size="16px"/>&nbsp;
+          <small>{{act.centro}}</small> &nbsp;&nbsp;&nbsp;
+          <q-icon v-bind:name="$mostrarIcono(act.tipo)" size="20px"/>&nbsp;
+          <small>{{ act.tipo }}</small>
+        </div>
         </q-card-title>
         <q-card-main>
           <q-collapsible label="Ver información" style="background-color: #e4b6d5">
@@ -71,21 +74,21 @@
         <q-card-separator/>
         <q-card-actions align="between">
           <div>
-            <q-icon name="trending_up"/>&nbsp;&nbsp;
+            <q-icon name="trending_up"/>
             <small>
               <strong>{{ act.nivel }}</strong>
             </small>
           </div>
           <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
+            <q-icon name="watch_later"/>
             <small>
               <strong>{{ act.numeroHoras }} h</strong>
             </small>
           </div>
           <div>
-            <q-icon name="person"/>&nbsp;&nbsp;
+            <q-icon name="person"/>
             <small>
-              <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
+              <strong>{{ act.numeroSolicitudes }} solicitudes/{{ act.numeroPlazas }} plazas</strong>
             </small>
           </div>
         </q-card-actions>
@@ -95,10 +98,9 @@
     <!-- fin collapsible cursos -->
     <!-- Collapsible online -->
     <q-collapsible icon="cloud" label="Online">
-      <q-item-tile label class="q-mb-md">
-        <strong>Recomendaciones</strong>
-      </q-item-tile>
-      <q-alert v-if="this.recomOnline.length==0" type="info">No hay actividades disponibles.</q-alert>
+      <q-alert v-if="this.recomOnline.length==0" icon="info" color="tertiary">
+      No hay actividades de este tipo disponibles.
+    </q-alert>
 
       <q-card class="q-mb-md" v-for="act in recomOnline" :key="act.nombre+act.fechaInicio">
         <q-card-title>
@@ -162,15 +164,15 @@
         <q-card-separator/>
         <q-card-actions align="between">
           <div>
-            <q-icon name="watch_later"/>&nbsp;&nbsp;
+            <q-icon name="watch_later"/>
             <small>
               <strong>{{ act.numeroHoras }} h</strong>
             </small>
           </div>
           <div>
-            <q-icon name="person"/>&nbsp;&nbsp;
+            <q-icon name="person"/>
             <small>
-              <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
+              <strong>{{ act.numeroSolicitudes }} solicitudes/{{ act.numeroPlazas }} plazas</strong>
             </small>
           </div>
         </q-card-actions>

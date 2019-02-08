@@ -17,7 +17,7 @@
                 color="primary"
                 icon="cloud"
                 label="Web oficial de descargas"
-                @click="abrirURL('https://github.com/sergarb1/ActividadesCyL')"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital')"
               />
             </p>
             <p>
@@ -28,7 +28,7 @@
                 color="secondary"
                 icon="android"
                 label="Descargar para Android"
-                @click="abrirURL('https://github.com/sergarb1/ActividadesCyL/raw/master/ActividadesCyL.apk');"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital.apk');"
               />
             </p>
 
@@ -39,8 +39,8 @@
                 size="sm"
                 color="secondary"
                 icon="computer"
-                label="Descargar para PC Linux"
-                @click="abrirURL('https://github.com/sergarb1/ActividadesCyL/raw/master/ActividadesCyL-linux32.zip');"
+                label="Descargar para PC Linux x86"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital-linux32.zip');"
               />
             </p>
             <p>
@@ -50,8 +50,30 @@
                 size="sm"
                 color="secondary"
                 icon="computer"
-                label="Descargar para PC Windows"
-                @click="abrirURL('https://github.com/sergarb1/ActividadesCyL/raw/master/ActividadesCyL-win32.zip');"
+                label="Descargar para PC Linux x64"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital-linux64.zip');"
+              />
+            </p>
+            <p>
+              <q-btn
+                push
+                rounded
+                size="sm"
+                color="secondary"
+                icon="computer"
+                label="Descargar para PC Windows x86"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital-win32.zip');"
+              />
+            </p>
+            <p>
+              <q-btn
+                push
+                rounded
+                size="sm"
+                color="secondary"
+                icon="computer"
+                label="Descargar para macOS"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital-macos.zip');"
               />
             </p>
           </q-card-main>

@@ -48,8 +48,35 @@
              <p>   También podrás activar y desactivar las notificaciones por cada provincia de modo que recibirás una notificación en tu teléfono el día que se abra la matrícula de algún curso en las provincias seleccionadas.</p>
           </div>
         </q-collapsible>
+        <q-collapsible icon="settings_backup_restore" label="<strong>Reiniciar la aplicación</strong>">
+          <div>
+            <p>Para reiniciar la aplicación y restaurar los datos de suscripciones, búsqueda y favoritos solo es necesario hacer clic sobre el siguiente botón.</p>
+         <q-btn
+      push
+      rounded
+      size="sm"
+      color="secondary"
+      icon-right="settings_backup_restore"
+      label="Restaurar datos"
+      @click="restaurarLocalStorage()"
+    />
+         
+          </div>
+        </q-collapsible>
       </q-list>
     </div>
     </div>
   </q-page>
 </template>
+<script>
+export default {
+  name: "Ayuda",
+  // Metodos accesibles desde Vue
+  methods: {
+    restaurarLocalStorage() {
+      localStorage.clear();
+      this.$q.notify({message: 'Se han restablecido los datos de la aplicación.',timeout: 1000, type: 'positive', position: 'center'})
+    }
+  }
+};
+</script>

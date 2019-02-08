@@ -18,6 +18,9 @@ export default ({
     else if (tipo === "Creación de contenidos digitales") return "brush";
     else if (tipo === "Comunicación y colaboración") return "question_answer";
     else if (tipo === "Empleo") return "work";
+    else if (tipo === "taller") return "build";
+    else if (tipo === "charla") return "chat_bubble";
+    else if (tipo === "curso") return "school";
     else return "group_work";
   };
 
@@ -240,6 +243,11 @@ export default ({
               bolsaDePalabras: arrayMineria,
               favorito: false
             };
+
+            //Caso especial del presencial
+            if (centro != "online") {
+              dato.tipo = miJson.actividades[i].tipo;
+            }
 
             //Caso especial del online
             if (centro == "online") {

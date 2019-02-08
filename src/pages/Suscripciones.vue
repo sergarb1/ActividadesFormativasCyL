@@ -6,7 +6,8 @@
         <strong>Gestión de suscripciones y notificaciones</strong>
       </q-item-tile>
       <q-list link>
-        <q-list-header>Marca las provincias a las que quieres suscribirte:</q-list-header>
+        <q-list-header>Marca las provincias a las que quieres suscribirte para visualizar actividades presenciales.<br/>
+                      Activa el interruptor de aquellas provincias de las que quieres recibir notificaciones cuando se abran matrículas de cursos.</q-list-header>
         <!-- Utilizamos un list para meter etiquetas con checkbox y toggle button
         Este primero es un caso especial para marcar todas-->
         <q-item tag="label">

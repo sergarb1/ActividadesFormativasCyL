@@ -13,7 +13,8 @@
       <q-input
         v-model="filtro.busqueda"
         @input="guardar()"
-        placeholder="Introduzca cadena de busqueda"
+        placeholder="Introduzca palabras clave"
+        stack-label="Palabras clave"
       />
       <br>
       <q-collapsible icon="room" label="Provincias">

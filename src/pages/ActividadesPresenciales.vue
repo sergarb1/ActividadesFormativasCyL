@@ -21,7 +21,9 @@
         </div>
         <div slot="subtitle">
           <q-icon name="room" size="16px"/>&nbsp;
-          <small>{{act.centro}}</small>
+          <small>{{act.centro}}</small> &nbsp;&nbsp;&nbsp;
+          <q-icon v-bind:name="$mostrarIcono(act.tipo)" size="20px"/>&nbsp;
+          <small>{{ act.tipo }}</small>
         </div>
       </q-card-title>
       <q-card-main>
@@ -63,24 +65,23 @@
         <q-item-main/>
       </q-card-main>
       <q-card-separator/>
-
       <q-card-actions align="between">
         <div>
-          <q-icon name="trending_up"/>&nbsp;&nbsp;
+          <q-icon name="trending_up"/>
           <small>
             <strong>{{ act.nivel }}</strong>
           </small>
         </div>
         <div>
-          <q-icon name="watch_later"/>&nbsp;&nbsp;
+          <q-icon name="watch_later"/>
           <small>
             <strong>{{ act.numeroHoras }} h</strong>
           </small>
         </div>
         <div>
-          <q-icon name="person"/>&nbsp;&nbsp;
+          <q-icon name="person"/>
           <small>
-            <strong>{{ act.numeroSolicitudes }} solicitudes / {{ act.numeroPlazas }} plazas</strong>
+            <strong>{{ act.numeroSolicitudes }} solicitudes/{{ act.numeroPlazas }} plazas</strong>
           </small>
         </div>
       </q-card-actions>
@@ -124,7 +125,7 @@ export default {
       Loading.show({
               spinner: QSpinnerGears,
               message: 'Carga inicial de Actividades, espere...',
-              messageColor: 'blue',
+              messageColor: 'white',
               spinnerSize: 250, // in pixels
               spinnerColor: 'white',
               customClass : 'bg-primary'

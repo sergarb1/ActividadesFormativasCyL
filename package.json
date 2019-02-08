@@ -1,10 +1,10 @@
 {
-  "name": "actividadesformativascyl",
+  "name": "cyldigital",
   "version": "0.0.1",
-  "description": "Actividades formativas CyL",
-  "productName": "Actividades Formativas CyL",
-  "cordovaId": "org.cordova.actividadesformativascyl",
-  "author": "Profes Redondos",
+  "description": "CyL Digital (actividades formativas)",
+  "productName": "CyL Digital (actividades formativas)",
+  "cordovaId": "org.cordova.cyldigital",
+  "author": "Round Teachers Software",
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0"

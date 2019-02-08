@@ -66,7 +66,7 @@
         <q-list-header>Enlaces</q-list-header>
 
         <q-item to="/suscripciones">
-          <q-item-side icon="edit"/>
+          <q-item-side icon="notifications"/>
           <q-item-main
             label="Suscripciones"
             sublabel="Selección de cursos por provincia"

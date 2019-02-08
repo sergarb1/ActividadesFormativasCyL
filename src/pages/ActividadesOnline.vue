@@ -123,7 +123,7 @@ export default {
       Loading.show({
         spinner: QSpinnerGears,
         message: "Carga inicial de Actividades, espere...",
-        messageColor: "blue",
+        messageColor: "white",
         spinnerSize: 250, // in pixels
         spinnerColor: "white",
         customClass: "bg-primary"

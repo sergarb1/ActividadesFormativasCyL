@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="org.cordova.actividadesformativascyl" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Actividades Formativas CyL</name>
-    <description>Actividades formativas CyL</description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <name>CyL Digital</name>
+    <description>CyL Digital (Actividades formativas)</description>
+    <author email="laurafolgadogalache@gmail.com" href="http://laurafolgado.es">
+        Sergi García y Laura Folgado (Round Teachers Software)
     </author>
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
