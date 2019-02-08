@@ -1,6 +1,6 @@
 <!-- Aqui template, donde ira el HTML que Vue renderizara -->
 <template>
-  <div class="q-ma-lg">
+  <q-page class="flex-top q-ma-lg">
     <!-- Indico un (m)argen a (all) todas las dimensiones grande (lg) -->
     <div class="col-auto">
       <strong class="q-mb-md">Descargar aplicación para Android y PC</strong>
@@ -81,7 +81,7 @@
         </q-card>
       </q-list>
     </div>
-  </div>
+  </q-page>
 </template>
 <!-- Aqui script, donde irá el Javascript (métodos, funciones, etc) -->
 <script>

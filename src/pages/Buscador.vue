@@ -165,6 +165,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      // Provincias, tematicas y niveles, todos marcados por defectos
       provinciasEstadoTodas: false,
 
       tematicasEstadoTodas: false,
@@ -265,38 +266,48 @@ export default {
     },
     // Funcion que recupera los filtros
     recuperarFiltro() {
-      // Si existe el filtro en LocalStorage, lo carga
-      if (localStorage.getItem("filtro")) {
-        this.filtro = JSON.parse(localStorage.getItem("filtro"));
-
-        // Cargamos parte de los filtros (Provincias)
-        for (var i in this.filtro.provincias) {
-          for (var j in this.provincias) {
-            if (this.filtro.provincias[i] == this.provincias[j].nombre) {
-              this.provincias[j].marcado = true;
-            }
-          }
-        }
-        // Cargamos parte de los filtros (Tematicas)
-        for (var i in this.filtro.tematicas) {
-          for (var j in this.tematicas) {
-            if (this.filtro.tematicas[i] == this.tematicas[j].nombre) {
-              this.tematicas[j].marcado = true;
-            }
-          }
-        }
-        // Cargamos parte de los filtros (Niveles)
-        for (var i in this.filtro.niveles) {
-          for (var j in this.niveles) {
-            if (this.filtro.niveles[i] == this.niveles[j].nombre) {
-              this.niveles[j].marcado = true;
-            }
-          }
-        }
-
-        // Guardamos los cambios y asi tambien recargamos
+      // Si no existe el filtro en LocalStorage, lo carga
+      if (!localStorage.getItem("filtro")) {
+        // Partiendo de un filtro vacio, marcamos por defecto todas las provincias, tematicas y niveles
+        this.provinciasEstadoTodas=true;
+        this.tematicasEstadoTodas=true;
+        this.nivelesEstadoTodas=true;
+        this.marcarTodasProvincias();
+        this.marcarTodasTematicas();
+        this.marcarTodasNiveles();
+        // Guardamos el filtro creado
         this.guardar();
       }
+
+      this.filtro = JSON.parse(localStorage.getItem("filtro"));
+
+      // Cargamos parte de los filtros (Provincias)
+      for (var i in this.filtro.provincias) {
+        for (var j in this.provincias) {
+          if (this.filtro.provincias[i] == this.provincias[j].nombre) {
+            this.provincias[j].marcado = true;
+          }
+        }
+      }
+      // Cargamos parte de los filtros (Tematicas)
+      for (var i in this.filtro.tematicas) {
+        for (var j in this.tematicas) {
+          if (this.filtro.tematicas[i] == this.tematicas[j].nombre) {
+            this.tematicas[j].marcado = true;
+          }
+        }
+      }
+      // Cargamos parte de los filtros (Niveles)
+      for (var i in this.filtro.niveles) {
+        for (var j in this.niveles) {
+          if (this.filtro.niveles[i] == this.niveles[j].nombre) {
+            this.niveles[j].marcado = true;
+          }
+        }
+      }
+
+      // Guardamos los cambios y asi tambien recargamos
+      this.guardar();
     },
 
     // Funcion que marca/desmarca todas las provincias

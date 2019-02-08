@@ -142,7 +142,7 @@ export default {
         "ultimaActualizacion",
         JSON.stringify(this.$ultimaActualizacion.toISOString())
       );
-    }.bind(this),10000);
+    }.bind(this),9000);
     
     // Timeout para que a los 16 segundos re-intente
     setTimeout( function(){
@@ -150,7 +150,7 @@ export default {
       this.cargarFavoritos("favoritos-presenciales");
       Loading.hide(); 
       this.$notificar();
-    }.bind(this),16000);
+    }.bind(this),15000);
     
 
 

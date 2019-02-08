@@ -142,7 +142,7 @@ export default {
             JSON.stringify(this.$ultimaActualizacion.toISOString())
           );
         }.bind(this),
-        10000
+        9000
       );
 
       // Timeout para que a los 16 segundos re-intente
@@ -153,7 +153,7 @@ export default {
           Loading.hide();
           this.$notificar();
         }.bind(this),
-        16000
+        15000
       );
     } // Si no hay que actualizar, entonces cargamos y notificamos
     else {
