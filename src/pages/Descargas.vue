@@ -27,10 +27,23 @@
                 size="sm"
                 color="secondary"
                 icon="android"
-                label="Descargar para Android"
+                label="Descargar para Android (Google Play)"
+                @click="abrirURL('https://play.google.com/store/apps/details?id=org.cordova.actividadesformativascyl');"
+              />
+            </p>
+
+            <p>
+              <q-btn
+                push
+                rounded
+                size="sm"
+                color="secondary"
+                icon="android"
+                label="Descargar para Android (APK)"
                 @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital.apk');"
               />
             </p>
+
 
             <p>
               <q-btn
