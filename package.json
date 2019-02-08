@@ -1,9 +1,9 @@
 {
   "name": "cyldigital",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "CyL Digital (actividades formativas)",
   "productName": "CyL Digital (actividades formativas)",
-  "cordovaId": "org.cordova.cyldigital",
+  "cordovaId": "org.cordova.actividadesformativascyl",
   "author": "Round Teachers Software",
   "private": true,
   "scripts": {
