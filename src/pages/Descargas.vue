@@ -86,7 +86,7 @@
                 color="secondary"
                 icon="computer"
                 label="Descargar para macOS"
-                @click="abrirURL('https://github.com/sergarb1/CyLDigital/raw/master/CyLDigital-macos.zip');"
+                @click="abrirURL('https://github.com/sergarb1/CyLDigital/blob/master/MacOS.MD');"
               />
             </p>
           </q-card-main>
