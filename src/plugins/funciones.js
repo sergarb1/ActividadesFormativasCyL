@@ -159,12 +159,9 @@ export default ({
 
     // Recorremos las provincias
     for (var x in provTmp) {
-      // Si la provincia esta marcada
-      if (provTmp[x].marcado) {
         // Pasamos el centro sin acentos y en minusculas
         var centroTMP = this.$eliminarAcentos(provTmp[x].nombre).toLowerCase();
         this.$getEstadoActividades(centroTMP, url);
-      }
     }
     // Obtenemos la informacion de las actividades online
     this.$getEstadoActividades("online", urlOnline);
