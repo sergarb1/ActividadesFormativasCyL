@@ -216,25 +216,7 @@ export default {
   },
   // Acciones al realizar al acabar de montarse Vue en el componente
   mounted() {
-    // Comprobar si hay que actualizar y si se debe hacer, se hace
-    if (this.$hayQueActualizar()) {
-      this.$actualizarDatos();
-      //Esperar 8s a que se actualice
-      var start = new Date().getTime();
-      var end = start;
-      while (end < start + 8000) {
-        end = new Date().getTime();
-      }
-      // Fin del esperar
-
-      // Ponemos fecha de actualizacion y la guardamos localStorage
-      this.$ultimaActualizacion = new Date();
-      localStorage.setItem(
-        "ultimaActualizacion",
-        JSON.stringify(this.$ultimaActualizacion.toISOString())
-      );
-    }
-
+  
     // Obtenemos la informacion de los centros marcados
     this.getEstadoActividades();
 
@@ -359,18 +341,6 @@ export default {
       // Asignamos el array temporal construido a actividades cursos
       this.actividadesPresenciales = arrayTmp.slice();
 
-      //Filtra online
-      arrayTmp = [];
-
-      for (var i in this.filtro.niveles) {
-        for (var j in this.actividadesOnline) {
-          if (this.actividadesOnline[j].nivel == this.filtro.niveles[i]) {
-            arrayTmp.push(this.actividadesOnline[j]);
-          }
-        }
-      }
-      // Asignamos el array temporal construido a actividades cursos
-      this.actividadesOnline = arrayTmp.slice();
     },
     // Aplicamos el filtro de las horas
     aplicarFiltroHoras() {
