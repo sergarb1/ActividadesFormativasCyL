@@ -10,18 +10,18 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "natural": "^0.6.3",
-    "stopword": "^0.1.13",
+    "stopword": "^0.1.19",
     "wordnet-db": "^3.1.11"
   },
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^3.0.8",
-    "electron-debug": "^2.0.0",
+    "electron": "^3.1.13",
+    "electron-debug": "^2.2.0",
     "electron-devtools-installer": "^2.2.4",
     "electron-packager": "^12.2.0",
-    "quasar-cli": "^0.17.0",
+    "quasar-cli": "^0.17.26",
     "strip-ansi": "=3.0.1"
   },
   "engines": {
