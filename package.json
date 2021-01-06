@@ -10,7 +10,7 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "natural": "^0.6.3",
     "stopword": "^0.1.19",
     "wordnet-db": "^3.1.11"
